@@ -4,7 +4,9 @@ import thunk from "redux-thunk";
 const composedEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const initialState = {
-  user: {},
+  user: {
+    _id: "klhasfklahsjkf",
+  },
 };
 
 const rootReducer = combineReducers({

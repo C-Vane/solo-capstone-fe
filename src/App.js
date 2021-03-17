@@ -20,7 +20,7 @@ const routes = [
 function App() {
   return (
     <Router>
-      <NavBar />
+      <Route component={NavBar} />
       <Switch>
         {routes.map((route, key) => (
           <Route
