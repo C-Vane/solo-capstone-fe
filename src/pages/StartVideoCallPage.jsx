@@ -1,9 +1,30 @@
+import { Button } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
+import styled from "styled-components";
+import { Container } from "react-bootstrap";
+import { postFunction } from "../functions/CRUDFunctions";
 
 export const StartVideoCallPage = (props) => {
-  return <div>Hello</div>;
+  const createRoom = async () => {
+    const response = await postFunction("room");
+    if (response._id) {
+      props.history.push(`/video/${response._id}`);
+    } else {
+      console.log(response);
+    }
+  };
+  return (
+    <StartCall>
+      <Container>
+        <Button onClick={createRoom}>Start Call</Button>
+      </Container>
+    </StartCall>
+  );
 };
+const StartCall = styled.section`
+  margin-top: 20vh;
+`;
 
 const mapStateToProps = (state) => ({});
 

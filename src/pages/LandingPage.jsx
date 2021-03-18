@@ -1,12 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
+import { mapStateToProps, mapDispatchToProps } from "../Assets/Assets";
 
 export const LandingPage = (props) => {
+  console.log(props);
   return <div></div>;
 };
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
