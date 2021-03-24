@@ -16,7 +16,7 @@ export const SignUp = (props) => {
   const logIn = async (e) => {
     e.preventDefault();
     const response = await postFunction("users/login", { email, password });
-    if (response.ok) {
+    if (response && response.ok) {
       //window.location.reload();
       props.setSignedIn(true);
     } else {
@@ -27,7 +27,7 @@ export const SignUp = (props) => {
   const signUp = async (e) => {
     e.preventDefault();
     const response = await postFunction("users/register", { firstname: name, lastname: surname, email, password, img: image });
-    if (response._id) {
+    if (response && response._id) {
       logIn(e);
     } else {
       setError("User Email or password is Incorrect");

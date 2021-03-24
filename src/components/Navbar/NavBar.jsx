@@ -4,7 +4,7 @@ import { Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Bar, Nav, Logo, NavItem, SIGN_IN, SIGN_UP, mapStateToProps, mapDispatchToProps } from "../../Assets/Assets";
-import { getFunction } from "../../functions/CRUDFunctions";
+import { getFunction, postFunction } from "../../functions/CRUDFunctions";
 import GetStarted from "../GetStarted/GetStarted";
 
 export const NavBar = (props) => {
@@ -12,13 +12,19 @@ export const NavBar = (props) => {
   const [menu, setMenu] = useState(null);
   const [getStarted, setGetStarted] = useState(false);
 
-  const logOut = () => {};
+  const logOut = async () => {
+    const { ok } = await postFunction("users/logOut");
+    if (ok) {
+      window.location.replace("/");
+    }
+  };
   const getUser = async () => {
     const loggedInUser = await getFunction("users/me");
-    if (loggedInUser._id) {
+    if (loggedInUser && loggedInUser._id) {
       setUser(loggedInUser);
     }
   };
+
   useEffect(() => {
     getUser();
   }, []);
@@ -42,7 +48,7 @@ export const NavBar = (props) => {
           </div>
           {user._id ? (
             <div>
-              <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)}></Avatar>
+              <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
               <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)}>
                 <MenuItem>
                   <Link to='/account'>My account</Link>

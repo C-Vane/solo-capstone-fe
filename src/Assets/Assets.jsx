@@ -77,13 +77,16 @@ export const Speech = styled.div`
 `;
 
 export const VideoGrid = styled.div`
+  margin-top: 5vh;
+  max-height: 95vh;
   display: grid;
   grid-template-columns: repeat(auto-fill, auto);
   grid-auto-rows: auto;
 `;
 export const Video = styled.video`
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 90vh;
+  margin: auto;
   object-fit: cover;
 `;
 
@@ -96,7 +99,6 @@ export const handleMic = (mic, language, setSpeech, audio) => {
 
     mic.onend = () => {
       mic.start();
-      console.log("mic off");
     };
   } else {
     mic.stop();
@@ -105,7 +107,6 @@ export const handleMic = (mic, language, setSpeech, audio) => {
     };
   }
   mic.onstart = () => {
-    console.log("Mic is on");
     setTimeout(() => {
       setSpeech("");
     }, 2000);

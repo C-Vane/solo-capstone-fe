@@ -10,11 +10,10 @@ export const SignIn = (props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  console.log(props);
   const logIn = async (e) => {
     e.preventDefault();
     const response = await postFunction("users/login", { email, password });
-    if (response.ok) {
+    if (response && response.ok) {
       window.location.reload();
     } else {
       setError("User Email or password is Incorrect");

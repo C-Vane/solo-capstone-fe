@@ -14,7 +14,7 @@ const SpeechRecognition = ({ audio, lang }) => {
       handleMic(recognition, lang, setSpeech, audio);
     }
     return () => {
-      handleMic(recognition, lang, setSpeech, false);
+      recognition.stop();
     };
   }, [audio, lang]);
 
