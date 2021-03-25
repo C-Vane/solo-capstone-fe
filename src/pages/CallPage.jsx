@@ -11,12 +11,28 @@ import NameModal from "../components/NameModal/NameModal";
 import SpeechRecognition from "../components/SpeechRecognition/SpeechRecognition";
 
 import Peer from "simple-peer";
+
 import { getFunction } from "../functions/CRUDFunctions";
+
+import { v4 as uuidv4 } from "uuid";
+
 import AcceptModal from "../components/AcceptModal/AcceptModal";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
+};
+
+const VideoOther = (props) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    props.peer.on("stream", (stream) => {
+      ref.current.srcObject = stream;
+    });
+  }, []);
+
+  return <Video playsInline autoPlay ref={ref} />;
 };
 
 export const CallPage = (props) => {
@@ -32,7 +48,7 @@ export const CallPage = (props) => {
 
   const userID = props.user._id;
 
-  const [user, setUser] = useState("6053aa15596c0d4358ab7459");
+  const [user, setUser] = useState(uuidv4());
 
   const [videoStreams, setVideoStreams] = useState([]);
 
@@ -45,34 +61,29 @@ export const CallPage = (props) => {
   const [waitingList, setWaitingList] = useState([]);
 
   useEffect(() => {
-    if (!getRoom) window.location.replace("/");
-    socketRef.current = io.connect(process.env.REACT_APP_URL);
-    socketRef.current.emit("join-room", roomID, props.user._id || user);
+    getRoom(roomID);
 
-    socketRef.current.on("user-requested", (payload) => {
-      console.log(`user requested admition ${payload.userId}`);
-      setWaitingList((list) => [...list, payload]);
-      admitUser(payload);
-    });
-
-    socketRef.current.on("disconnected", (userId) => {
-      console.log("User left");
-      peers[userId] && peers[userId].close();
-    });
-    socketRef.current.on("user-connected", (payload) => {
-      console.log("User connected", payload);
-    });
-
-    socketRef.current.on("error", (payload) => {
-      console.log(payload);
-    });
-
-    navigator.mediaDevices.getUserMedia({ audio: audio, video: true }).then((stream) => {
+    navigator.mediaDevices.getUserMedia({ audio: audio, video: videoConstraints }).then((stream) => {
       userVideo.current.srcObject = stream;
       userStream.current = stream;
+      socketRef.current = io.connect(process.env.REACT_APP_URL);
+      socketRef.current.emit("join-room", roomID, props.user._id || user);
+
+      socketRef.current.on("user-requested", (payload) => {
+        console.log(`user requested admition ${payload.userId}`);
+        setWaitingList((list) => [...list, payload]);
+        admitUser(payload);
+      });
+
+      socketRef.current.on("user-connected", (payload) => {
+        console.log("User connected", payload);
+      });
+
+      socketRef.current.on("error", (payload) => {
+        console.log(payload);
+      });
 
       socketRef.current.on("all-users", (users) => {
-        console.log(users);
         const peers = [];
         users.forEach((userID) => {
           const peer = createPeer(userID, socketRef.current.id, stream);
@@ -85,7 +96,7 @@ export const CallPage = (props) => {
         setPeers(peers);
       });
 
-      socketRef.current.on("user joined", (payload) => {
+      socketRef.current.on("user-joined", (payload) => {
         console.log("New User Connected");
         const peer = addPeer(payload.signal, payload.callerID, stream);
         peersRef.current.push({
@@ -96,8 +107,15 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("receiving-returned-signal", (payload) => {
-        const item = peersRef.current.find((p) => p.peerID === payload.id);
-        item.peer.signal(payload.signal);
+        const item = peersRef.current.find((p) => p.peerID.socketId === payload.id);
+        item && item.peer.signal(payload.signal);
+      });
+
+      socketRef.current.on("user-disconnected", (userId) => {
+        const index = peersRef.current.findIndex((peer) => peer.peerID === userId);
+        const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index)];
+        peersRef.current = [...peers];
+        setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index)]);
       });
 
       return () => {};
@@ -111,7 +129,10 @@ export const CallPage = (props) => {
       stream,
     });
 
+    console.log("Create new peer", userToSignal);
+
     peer.on("signal", (signal) => {
+      console.log("sending-signal");
       socketRef.current.emit("sending-signal", { userToSignal, callerID, signal });
     });
 
@@ -126,6 +147,7 @@ export const CallPage = (props) => {
     });
 
     peer.on("signal", (signal) => {
+      console.log("receiving signal");
       socketRef.current.emit("returning-signal", { signal, callerID });
     });
 
@@ -138,7 +160,7 @@ export const CallPage = (props) => {
     const room = await getFunction("room/" + id);
     console.log(room);
     if (room && room._id) return true;
-    return false;
+    else window.location.replace("/");
   };
 
   const admitUser = (payload) => {
@@ -154,8 +176,11 @@ export const CallPage = (props) => {
 
       <VideoGrid>
         <h2>You</h2>
-        <SpeechRecognition audio={audio} lang={language} />
+        {/* <SpeechRecognition audio={audio} lang={language} /> */}
         <Video autoPlay ref={userVideo} muted></Video>
+        {peers.map((peer, index) => (
+          <VideoOther key={index} peer={peer} muted />
+        ))}
       </VideoGrid>
     </>
   );
