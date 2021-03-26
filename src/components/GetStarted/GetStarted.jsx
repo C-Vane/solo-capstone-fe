@@ -38,8 +38,8 @@ const GetStarted = (props) => {
                 <SignUp close={props.close} setCurrent={setCurrent} />
               )}
             </div>
-            <small className='text-muted text-smaller'>
-              Click “{welcome ? "Sign In" : "Sign Up"}” to agree to VSign’s Terms of Service and acknowledge that VSign’s Privacy Policy applies to you.
+            <small className='text-muted text-smaller px-4'>
+              Click “{welcome ? "Sign In" : "Sign Up"}” to agree to ToSign’s Terms of Service and acknowledge that ToSign’s Privacy Policy applies to you.
             </small>
           </div>
         </Paper>
@@ -50,7 +50,7 @@ const GetStarted = (props) => {
 
 const BackDrop = styled.div`
   position: fixed;
-  z-index: 1;
+  z-index: 9999999;
   padding-top: 50px;
   left: 0;
   top: 0;

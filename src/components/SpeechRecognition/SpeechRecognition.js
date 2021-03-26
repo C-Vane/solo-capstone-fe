@@ -6,9 +6,8 @@ if (speechRecognitionTool !== undefined) {
   recognition = new speechRecognitionTool();
 }
 
-const SpeechRecognition = ({ audio, lang }) => {
+const SpeechRecognition = ({ audio, lang, text }) => {
   const [speech, setSpeech] = useState("");
-
   useEffect(() => {
     if (typeof speechRecognitionTool !== "undefined") {
       handleMic(recognition, lang, setSpeech, audio);
@@ -17,7 +16,9 @@ const SpeechRecognition = ({ audio, lang }) => {
       recognition.stop();
     };
   }, [audio, lang]);
-
+  if (text) {
+    return <Speech>{text}</Speech>;
+  }
   if (typeof speechRecognitionTool === "undefined") {
     return <Speech>No speech available</Speech>;
   }

@@ -1,4 +1,19 @@
 body {
-  background-color: rgb(71, 68, 68);
+  background-color: #daded4;
   z-index: -1;
+}
+#simple-menu div.MuiPaper-root {
+  top: 15vmin !important;
+}
+
+#simple-menu li,
+#simple-menu a {
+  color: #2c3531;
+}
+#simple-menu a:hover {
+  text-decoration: none;
+}
+
+#simple-menu li:hover {
+  color: #2c3531;
 }

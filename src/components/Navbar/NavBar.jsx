@@ -1,4 +1,5 @@
 import { Avatar, Menu, MenuItem, Paper } from "@material-ui/core";
+import { Home, VideocamOutlined } from "@material-ui/icons";
 import React, { useState, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
@@ -28,24 +29,32 @@ export const NavBar = (props) => {
   useEffect(() => {
     getUser();
   }, []);
+  if (props.location.pathname.includes("/video")) {
+    return <div></div>;
+  }
   return (
     <Bar>
       <Container>
         <Nav>
-          <div>
-            <Link to='/'>
-              <Logo />
-            </Link>
-            <Link to='/' className={location.pathname === "/" ? "active" : ""}>
-              <NavItem>Home</NavItem>
-            </Link>
-
-            {user._id && (
-              <Link to='/startCall' className={location.pathname === "/startCall" ? "active" : ""}>
-                <NavItem>Video Call</NavItem>
+          <Link to='/'>
+            <Logo className='h-100 w-100' />
+          </Link>
+          {user._id && (
+            <div>
+              <Link to='/' className={location.pathname === "/" ? "active" : ""}>
+                <NavItem>
+                  {" "}
+                  <Home /> <span className='d-none d-md-block'>Home</span>
+                </NavItem>
               </Link>
-            )}
-          </div>
+
+              <Link to='/startCall' className={location.pathname === "/startCall" ? "active" : ""}>
+                <NavItem>
+                  <VideocamOutlined /> <span className='d-none d-md-block'>Video Call</span>
+                </NavItem>
+              </Link>
+            </div>
+          )}
           {user._id ? (
             <div>
               <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
@@ -61,11 +70,11 @@ export const NavBar = (props) => {
             </div>
           ) : (
             <div>
-              <Button variant='outlined' onClick={() => setGetStarted(SIGN_UP)}>
+              <Button variant='outline-dark' className='ml-3 rounded-0' onClick={() => setGetStarted(SIGN_UP)}>
                 Sign Up
               </Button>
 
-              <Button variant='outlined' onClick={() => setGetStarted(SIGN_IN)}>
+              <Button variant='outline-dark' className='ml-3  rounded-0' onClick={() => setGetStarted(SIGN_IN)}>
                 Sign In
               </Button>
             </div>

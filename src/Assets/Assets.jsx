@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import img from "./noBackground.png";
 
 export const SIGN_IN = "Sign In";
 
@@ -10,7 +11,7 @@ export const Bar = styled.header`
   position: fixed;
   top: 0;
   z-index: 999;
-  background: #fff;
+  background: #d1e8e220;
 `;
 
 export const Nav = styled.nav`
@@ -22,16 +23,16 @@ export const Nav = styled.nav`
   div {
     align-self: flex-end;
     display: flex;
-
+    height: inherit;
     a {
-      color: black;
+      color: #3c403d;
       text-decoration: none;
       float: left;
       align-self: flex-end;
       border-bottom: 2px solid transparent;
       height: 100%;
       &:hover {
-        border-bottom-color: rgb(38, 38, 38, 0.1);
+        border-bottom-color: #a3bcb6;
         background: rgb(38, 38, 38, 0.05);
       }
       &.active {
@@ -54,40 +55,60 @@ export const mapDispatchToProps = (dispatch) => ({
 export const Logo = styled.div`
   width: 10vmin;
   height: 10vmin;
-  max-height: 80px;
-  max-width: 80px;
+  max-height: 100px;
+  max-width: 100px;
   min-height: 40px;
-  min-width: 40px;
-  background-color: #bdbdbd;
+  min-width: 80px;
+  background-image: url(${img});
   border-radius: 5px;
   margin-right: 10px;
+  margin-bottom: 10px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 `;
 
 export const NavItem = styled.div`
   text: black;
+  height: 100%;
   text-decoration: none;
   margin: 3px 5vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  span {
+    font-weight: 300;
+  }
 `;
 
 export const Speech = styled.div`
+  position: relative;
+  z-index: 999;
+  top: -10vmin;
+  color: #fff;
+  background-color: #000;
+  margin: auto;
+  padding: 2px 10px;
+`;
+export const Name = styled.div`
+  position: relative;
+  font-size: 15px;
+  z-index: 999;
+  top: -20px;
   color: #fff;
   background-color: #000;
   margin: auto;
   padding: 2px 10px;
 `;
 
-export const VideoGrid = styled.div`
-  margin-top: 5vh;
-  max-height: 95vh;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, auto);
-  grid-auto-rows: auto;
-`;
 export const Video = styled.video`
-  width: 80%;
-  height: 90vh;
-  margin: auto;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  background-size: cover;
+  overflow: hidden;
 `;
 
 export const handleMic = (mic, language, setSpeech, audio) => {

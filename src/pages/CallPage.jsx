@@ -16,23 +16,16 @@ import { getFunction } from "../functions/CRUDFunctions";
 
 import { v4 as uuidv4 } from "uuid";
 
+import styled from "styled-components";
+
 import AcceptModal from "../components/AcceptModal/AcceptModal";
+import { Row } from "react-bootstrap";
+import VideoOther from "../components/VideoOther/VideoOther";
+import { Container } from "@material-ui/core";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
-};
-
-const VideoOther = (props) => {
-  const ref = useRef();
-
-  useEffect(() => {
-    props.peer.on("stream", (stream) => {
-      ref.current.srcObject = stream;
-    });
-  }, []);
-
-  return <Video playsInline autoPlay ref={ref} />;
 };
 
 export const CallPage = (props) => {
@@ -171,19 +164,24 @@ export const CallPage = (props) => {
     setWaitingList((list) => list.filter((user) => user !== payload.userId));
   };
   return (
-    <>
+    <ContainerMain>
       {!props.user && !user && <NameModal setName={setUser} />}
 
-      <VideoGrid>
-        <h2>You</h2>
-        {/* <SpeechRecognition audio={audio} lang={language} /> */}
+      <Row>
         <Video autoPlay ref={userVideo} muted></Video>
+        <SpeechRecognition audio={audio} lang={language} />
+      </Row>
+      <Row>
         {peers.map((peer, index) => (
-          <VideoOther key={index} peer={peer} muted />
+          <VideoOther key={index} peer={peer} />
         ))}
-      </VideoGrid>
-    </>
+      </Row>
+    </ContainerMain>
   );
 };
 
+const ContainerMain = styled(Container)`
+  max-height: 100vh;
+  padding-top: 10vh;
+`;
 export default connect(mapStateToProps, mapDispatchToProps)(CallPage);

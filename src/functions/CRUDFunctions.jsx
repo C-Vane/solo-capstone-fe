@@ -18,6 +18,7 @@ export const getFunction = async (endp) => {
     } else {
       const data = response.status === 401 && tokenRefresh(getFunction, endp);
       if (data) return data;
+      return await response.text();
     }
   } catch (error) {
     console.log(error);
@@ -41,7 +42,6 @@ export const postFunction = async (endp, data) => {
         const refetch = tokenRefresh(postFunction, endp, data);
         if (refetch) return refetch;
       }
-
       return await response.text();
     }
   } catch (error) {
@@ -85,8 +85,7 @@ export const deleteFunction = async (endp) => {
         const refetch = tokenRefresh(deleteFunction, endp);
         if (refetch) return refetch;
       }
-      console.log(await response.text());
-      return false;
+      return await response.text();
     }
   } catch (error) {
     console.log(error);
