@@ -2,20 +2,19 @@ import React, { useEffect, useRef } from "react";
 import { Col } from "react-bootstrap";
 import { Video, Name } from "../../Assets/Assets";
 
-const VideoOther = (props) => {
+const VideoOther = ({ peer }) => {
   const ref = useRef();
 
   useEffect(() => {
-    console.log(props.peer);
-    props.peer.on("stream", (stream) => {
+    peer.on("stream", (stream) => {
       ref.current.srcObject = stream;
     });
   }, []);
-
+  console.log(peer.user);
   return (
     <Col sm={3}>
       <Video playsInline autoPlay ref={ref} muted />
-      <Name></Name>
+      <Name>${peer.user && peer.user._id}</Name>
     </Col>
   );
 };

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import io, { Socket } from "socket.io-client";
 
-import { mapDispatchToProps, mapStateToProps, Video, VideoGrid } from "../Assets/Assets";
+import { mapDispatchToProps, mapStateToProps, Name, Video, VideoGrid } from "../Assets/Assets";
 
 import NameModal from "../components/NameModal/NameModal";
 
@@ -121,8 +121,8 @@ export const CallPage = (props) => {
       trickle: false,
       stream,
     });
-
-    console.log("Create new peer", userToSignal);
+    peer.user = userToSignal;
+    console.log("Create new peer", peer.user);
 
     peer.on("signal", (signal) => {
       console.log("sending-signal");
@@ -169,8 +169,10 @@ export const CallPage = (props) => {
 
       <Row>
         <Video autoPlay ref={userVideo} muted></Video>
+        <Name>${(props.user && props.user.name) || user}</Name>
         <SpeechRecognition audio={audio} lang={language} />
       </Row>
+
       <Row>
         {peers.map((peer, index) => (
           <VideoOther key={index} peer={peer} />
