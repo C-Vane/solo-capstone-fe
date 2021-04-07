@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import io, { Socket } from "socket.io-client";
 
-import { mapDispatchToProps, mapStateToProps, Name, Video, VideoGrid } from "../Assets/Assets";
+import { mapDispatchToProps, mapStateToProps, Video, NameBig } from "../Assets/Assets";
 
 import NameModal from "../components/NameModal/NameModal";
 
@@ -19,9 +19,10 @@ import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
 import AcceptModal from "../components/AcceptModal/AcceptModal";
-import { Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import VideoOther from "../components/VideoOther/VideoOther";
 import { Container } from "@material-ui/core";
+import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
@@ -29,7 +30,7 @@ const videoConstraints = {
 };
 
 export const CallPage = (props) => {
-  const userVideo = useRef();
+  const mainVideo = useRef();
 
   const socketRef = useRef();
 
@@ -41,7 +42,9 @@ export const CallPage = (props) => {
 
   const userID = props.user._id;
 
-  const [user, setUser] = useState(uuidv4());
+  const [user, setUser] = useState();
+
+  const [currentUser, setCurrentUser] = useState();
 
   const [videoStreams, setVideoStreams] = useState([]);
 
@@ -57,7 +60,10 @@ export const CallPage = (props) => {
     getRoom(roomID);
 
     navigator.mediaDevices.getUserMedia({ audio: audio, video: videoConstraints }).then((stream) => {
-      userVideo.current.srcObject = stream;
+      mainVideo.current.srcObject = stream;
+      setUser(props.user);
+      console.log(props);
+      setCurrentUser(props.user.firstname || uuidv4());
       userStream.current = stream;
       socketRef.current = io.connect(process.env.REACT_APP_URL);
       socketRef.current.emit("join-room", roomID, props.user._id || user);
@@ -105,12 +111,15 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("user-disconnected", (userId) => {
+        console.log("user disconnected");
         const index = peersRef.current.findIndex((peer) => peer.peerID === userId);
         const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index)];
         peersRef.current = [...peers];
         setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index)]);
       });
-
+      socketRef.current.on("call-end", () => {
+        window.location.replace("/callEnded");
+      });
       return () => {};
     });
   }, []);
@@ -163,21 +172,39 @@ export const CallPage = (props) => {
   const declineUser = (payload) => {
     setWaitingList((list) => list.filter((user) => user !== payload.userId));
   };
+  const setMain = (stream, user) => {
+    mainVideo.current.srcObject = stream;
+    setCurrentUser(user);
+  };
+
+  const LeaveRoom = () => {
+    socketRef.current.disconnect();
+    socketRef.current.emit("end-call", { roomId: roomID, userId: userID });
+  };
   return (
     <ContainerMain>
       {!props.user && !user && <NameModal setName={setUser} />}
-
+      {!props.user && !user && <AdmitUserModal setName={setUser} />}
       <Row>
-        <Video autoPlay ref={userVideo} muted></Video>
-        <Name>${(props.user && props.user.name) || user}</Name>
-        <SpeechRecognition audio={audio} lang={language} />
+        <Col sm={peers.length > 4 || peers.length === 0 ? 12 : 6} className='mt-3'>
+          <NameBig>{currentUser}</NameBig>
+          <Video autoPlay ref={mainVideo} muted></Video>
+
+          <SpeechRecognition audio={audio} lang={language} />
+        </Col>
+        {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} />)}
       </Row>
 
-      <Row>
-        {peers.map((peer, index) => (
-          <VideoOther key={index} peer={peer} />
-        ))}
-      </Row>
+      {peers.length > 3 && (
+        <Row>
+          {peers.map((peer, index) => (
+            <VideoOther key={index} peer={peer} setMain={setMain} size={3} />
+          ))}
+        </Row>
+      )}
+      <ButtonLeave variant='outline-danger' onClick={LeaveRoom}>
+        Leave
+      </ButtonLeave>
     </ContainerMain>
   );
 };
@@ -185,5 +212,9 @@ export const CallPage = (props) => {
 const ContainerMain = styled(Container)`
   max-height: 100vh;
   padding-top: 10vh;
+`;
+const ButtonLeave = styled(Button)`
+  margin-top: 5vh;
+  align-self: flex-end;
 `;
 export default connect(mapStateToProps, mapDispatchToProps)(CallPage);

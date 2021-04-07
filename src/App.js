@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import NavBar from "./components/Navbar/NavBar";
 import Protected from "./functions/Protected";
+import CallEndPage from "./pages/CallEndPage";
 import CallPage from "./pages/CallPage";
 import LandingPage from "./pages/LandingPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -12,6 +13,7 @@ const routes = [
   { path: "/startCall", component: StartVideoCallPage, isProtected: true },
   { path: "/settings", component: SettingsPage, isProtected: true },
   { path: "/video/:id", component: CallPage },
+  { path: "/callEnded", component: CallEndPage },
 ];
 function App() {
   return (

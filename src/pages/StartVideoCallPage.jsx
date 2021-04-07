@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { postFunction } from "../functions/CRUDFunctions";
 
 export const StartVideoCallPage = (props) => {
@@ -17,7 +17,20 @@ export const StartVideoCallPage = (props) => {
   return (
     <StartCall>
       <Container>
-        <Button onClick={createRoom}>Start Call</Button>
+        <Row>
+          <h2>Settings</h2>
+        </Row>
+        <Row>
+          <Col>
+            Muted <br />
+            Speech Recognition <br />
+            Video
+          </Col>
+        </Row>
+
+        <Row>
+          <Button onClick={createRoom}>Start Call</Button>
+        </Row>
       </Container>
     </StartCall>
   );

@@ -22,7 +22,7 @@ const SpeechRecognition = ({ audio, lang, text }) => {
   if (typeof speechRecognitionTool === "undefined") {
     return <Speech>No speech available</Speech>;
   }
-  return <>{speech && <Speech>{speech}</Speech>}</>;
+  return <div className='m-auto'>{speech && <Speech>{speech}</Speech>}</div>;
 };
 
 export default SpeechRecognition;

@@ -90,6 +90,8 @@ export const Speech = styled.div`
   background-color: #000;
   margin: auto;
   padding: 2px 10px;
+  width: max-content;
+  max-width: 80%;
 `;
 export const Name = styled.div`
   position: relative;
@@ -101,14 +103,29 @@ export const Name = styled.div`
   margin: auto;
   padding: 2px 10px;
 `;
+export const NameBig = styled.div`
+  position: absolute;
+  font-size: 3vmin;
+  z-index: 999;
+  top: 4vmin;
+  left: 4vmin;
+  color: #fff;
+  background-color: #000;
+  width: min-content;
+  padding: 2px 10px;
+`;
 
 export const Video = styled.video`
-  max-width: 100%;
-  max-height: 100%;
-  min-width: 100%;
-  min-height: 100%;
-  background-size: cover;
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   overflow: hidden;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  border-radius: 7px;
 `;
 
 export const handleMic = (mic, language, setSpeech, audio) => {
