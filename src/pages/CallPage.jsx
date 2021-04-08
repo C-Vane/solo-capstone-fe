@@ -28,7 +28,87 @@ const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
 };
-
+/*
+const languageChoices = {
+Afrikaans:"af",
+ Basque :"eu",
+ Bulgarian: "bg",
+ Catalan: "ca",
+ "Arabic Egypt": "ar-EG",
+"Arabic Jordan": "ar-JO",
+"Arabic Kuwait": "ar-KW",
+ "Arabic Lebanon": "ar-LB",
+ "Arabic Qatar": "ar-QA",
+"Arabic UAE": "ar-AE",
+ "Arabic Morocco": "ar-MA",
+ "Arabic Iraq": "ar-IQ",
+ "Arabic Algeria": "ar-DZ",
+ Arabic Bahrain: ar-BH
+ Arabic Lybia: ar-LY
+ Arabic Oman: ar-OM
+ Arabic Saudi Arabia: ar-SA
+ Arabic Tunisia: ar-TN
+ Arabic Yemen: ar-YE
+ Czech cs
+ Dutch nl-NL
+ English Australia: en-AU
+ English Canada: en-CA
+ English India: en-IN
+ English New Zealand: en-NZ
+ English South Africa: en-ZA
+ English UK: en-GB
+ English US: en-US
+ Finnish fi
+ French fr-FR
+ Galician gl
+ German de-DE
+ Hebrew he
+ Hungarian hu
+ Icelandic is
+ Italian it-IT
+ Indonesian id
+ Japanese ja
+ Korean ko
+ Latin la
+ Mandarin Chinese zh-CN
+ Traditional Taiwan zh-TW
+ Simplified China zh-CN ?
+ Simplified Hong Kong zh-HK
+ Yue Chinese (Traditional Hong Kong: zh-yue
+ Malaysian ms-MY
+ Norwegian no-NO
+ Polish pl
+ Pig Latin xx-piglatin
+ Portuguese pt-PT
+ Portuguese (brasil: pt-BR
+ Romanian ro-RO
+ Russian ru
+ Serbian sr-SP
+ Slovak sk
+ Spanish Argentina: es-AR
+ Spanish Bolivia: es-BO
+ Spanish Chile: es-CL
+ Spanish Colombia: es-CO
+ Spanish Costa Rica: es-CR
+ Spanish Dominican Republic: es-DO
+ Spanish Ecuador: es-EC
+ Spanish El Salvador: es-SV
+ Spanish Guatemala: es-GT
+ Spanish Honduras: es-HN
+ Spanish Mexico: es-MX
+ Spanish Nicaragua: es-NI
+ Spanish Panama: es-PA
+ Spanish Paraguay: es-PY
+ Spanish Peru: es-PE
+ Spanish Puerto Rico: es-PR
+ Spanish Spain: es-ES
+ Spanish US: es-US
+ Spanish Uruguay: es-UY
+ Spanish Venezuela: es-VE
+ Swedish sv-SE
+ Turkish tr
+ Zulu zu
+}*/
 export const CallPage = (props) => {
   const mainVideo = useRef();
 
@@ -42,7 +122,7 @@ export const CallPage = (props) => {
 
   const userID = props.user._id;
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(props.user);
 
   const [currentUser, setCurrentUser] = useState();
 
@@ -50,28 +130,34 @@ export const CallPage = (props) => {
 
   const [peers, setPeers] = useState([]);
 
+  const [Room, setRoom] = useState({});
+
   const [language, setLanguage] = useState("en-us");
 
   const [audio, setAudio] = useState(true);
 
+  const [video, setVideo] = useState(true);
+
+  const [speech, setSpeech] = useState(false);
+
+  const [signRecognition, setSignRecognition] = useState(true);
+
   const [waitingList, setWaitingList] = useState([]);
+
+  const [admit, setAdmit] = useState(false);
 
   useEffect(() => {
     getRoom(roomID);
-
-    navigator.mediaDevices.getUserMedia({ audio: audio, video: videoConstraints }).then((stream) => {
+    setCurrentUser(props.user.firstname);
+    navigator.mediaDevices.getUserMedia({ audio: audio, video: video ? videoConstraints : false }).then((stream) => {
       mainVideo.current.srcObject = stream;
-      setUser(props.user);
-      console.log(props);
-      setCurrentUser(props.user.firstname || uuidv4());
       userStream.current = stream;
       socketRef.current = io.connect(process.env.REACT_APP_URL);
       socketRef.current.emit("join-room", roomID, props.user._id || user);
-
       socketRef.current.on("user-requested", (payload) => {
         console.log(`user requested admition ${payload.userId}`);
         setWaitingList((list) => [...list, payload]);
-        admitUser(payload);
+        setAdmit(true);
       });
 
       socketRef.current.on("user-connected", (payload) => {
@@ -118,6 +204,7 @@ export const CallPage = (props) => {
         setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index)]);
       });
       socketRef.current.on("call-end", () => {
+        console.log("call ended");
         window.location.replace("/callEnded");
       });
       return () => {};
@@ -160,8 +247,7 @@ export const CallPage = (props) => {
 
   const getRoom = async (id) => {
     const room = await getFunction("room/" + id);
-    console.log(room);
-    if (room && room._id) return true;
+    if (room && room._id) setRoom(room);
     else window.location.replace("/");
   };
 
@@ -178,33 +264,38 @@ export const CallPage = (props) => {
   };
 
   const LeaveRoom = () => {
-    socketRef.current.disconnect();
     socketRef.current.emit("end-call", { roomId: roomID, userId: userID });
+    window.location.replace("/callEnded");
   };
   return (
     <ContainerMain>
-      {!props.user && !user && <NameModal setName={setUser} />}
-      {!props.user && !user && <AdmitUserModal setName={setUser} />}
-      <Row>
-        <Col sm={peers.length > 4 || peers.length === 0 ? 12 : 6} className='mt-3'>
-          <NameBig>{currentUser}</NameBig>
-          <Video autoPlay ref={mainVideo} muted></Video>
+      {!user ? (
+        <NameModal setUser={setUser} setVideo={setVideo} setAudio={setAudio} setSpeech={setSpeech} />
+      ) : (
+        <>
+          {admit && <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} setAdmit={setAdmit} />}
+          <Row>
+            <Col sm={peers.length > 4 || peers.length === 0 ? 12 : 6} className='mt-3'>
+              <NameBig>{currentUser}</NameBig>
+              <Video autoPlay ref={mainVideo} muted></Video>
 
-          <SpeechRecognition audio={audio} lang={language} />
-        </Col>
-        {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} />)}
-      </Row>
+              <SpeechRecognition audio={audio} lang={language} />
+            </Col>
+            {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} />)}
+          </Row>
 
-      {peers.length > 3 && (
-        <Row>
-          {peers.map((peer, index) => (
-            <VideoOther key={index} peer={peer} setMain={setMain} size={3} />
-          ))}
-        </Row>
+          {peers.length > 3 && (
+            <Row>
+              {peers.map((peer, index) => (
+                <VideoOther key={index} peer={peer} setMain={setMain} size={3} />
+              ))}
+            </Row>
+          )}
+          <ButtonLeave variant='outline-danger' onClick={LeaveRoom}>
+            Leave
+          </ButtonLeave>
+        </>
       )}
-      <ButtonLeave variant='outline-danger' onClick={LeaveRoom}>
-        Leave
-      </ButtonLeave>
     </ContainerMain>
   );
 };

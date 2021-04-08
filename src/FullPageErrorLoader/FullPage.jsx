@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
+import { Logo } from "../Assets/Assets";
 
 const FullPage = (props) => {
   const [errorText, setErrorText] = useState([]);
@@ -43,11 +44,11 @@ const FullPage = (props) => {
     <div className='full-page p-2 p-md-5 ' style={errorText && { backgroundImage: `url("${errorText[2]}")`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center" }}>
       {!error ? (
         <div className='loader-page'>
-          <img src='' height='50' />
+          <Logo />
         </div>
       ) : (
         <div className='errors w-75 m-auto'>
-          <img src='' style={{ filter: errorText[3] && "invert(1)" }} height='50' />
+          <Logo />
           <div className={`mt-5 d-flex flex-column text-center ${errorText[3]}`}>
             <h1 className='m-5 error-code'>{errorText[0]}</h1>
 
