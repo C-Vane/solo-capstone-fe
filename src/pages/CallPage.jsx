@@ -117,7 +117,7 @@ export const CallPage = (props) => {
         const peer = addPeer(payload.signal, payload.callerID, stream);
         peersRef.current.push({
           peer,
-          user: payload.caller,
+          user: payload.user,
         });
         setPeers((users) => [...users, peer]);
       });
