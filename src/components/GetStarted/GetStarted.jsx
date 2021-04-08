@@ -2,7 +2,7 @@ import { Paper, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Logo } from "../../Assets/Assets";
+import { BackDrop, Container, Logo } from "../../Assets/Assets";
 import { SignIn } from "../SignIn/SignIn";
 import { SignUp } from "../SignUp/SignUp";
 import Join from "./Join";
@@ -48,22 +48,4 @@ const GetStarted = (props) => {
   );
 };
 
-const BackDrop = styled.div`
-  position: fixed;
-  z-index: 9999999;
-  padding-top: 50px;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  background-color: rgba(255, 255, 255, 0.7);
-  font-family: "Tinos", serif;
-`;
-
-const Container = styled.div`
-  height: 80vh;
-  margin: auto;
-  width: 50vmax;
-`;
 export default GetStarted;

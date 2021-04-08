@@ -112,6 +112,7 @@ export const NameBig = styled.div`
   color: #fff;
   background-color: #000;
   width: min-content;
+  text-wrap: no-wrap;
   padding: 2px 10px;
 `;
 
@@ -126,6 +127,25 @@ export const Video = styled.video`
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   border-radius: 7px;
+`;
+
+export const BackDrop = styled.div`
+  position: fixed;
+  z-index: 10;
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  background-color: rgba(255, 255, 255, 0.7);
+  font-family: "Tinos", serif;
+`;
+
+export const Container = styled.div`
+  height: 80vh;
+  margin: auto;
+  width: 50vmax;
 `;
 
 export const handleMic = (mic, language, setSpeech, audio) => {

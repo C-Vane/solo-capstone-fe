@@ -14,8 +14,6 @@ import Peer from "simple-peer";
 
 import { getFunction } from "../functions/CRUDFunctions";
 
-import { v4 as uuidv4 } from "uuid";
-
 import styled from "styled-components";
 
 import AcceptModal from "../components/AcceptModal/AcceptModal";
@@ -28,87 +26,7 @@ const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
 };
-/*
-const languageChoices = {
-Afrikaans:"af",
- Basque :"eu",
- Bulgarian: "bg",
- Catalan: "ca",
- "Arabic Egypt": "ar-EG",
-"Arabic Jordan": "ar-JO",
-"Arabic Kuwait": "ar-KW",
- "Arabic Lebanon": "ar-LB",
- "Arabic Qatar": "ar-QA",
-"Arabic UAE": "ar-AE",
- "Arabic Morocco": "ar-MA",
- "Arabic Iraq": "ar-IQ",
- "Arabic Algeria": "ar-DZ",
- Arabic Bahrain: ar-BH
- Arabic Lybia: ar-LY
- Arabic Oman: ar-OM
- Arabic Saudi Arabia: ar-SA
- Arabic Tunisia: ar-TN
- Arabic Yemen: ar-YE
- Czech cs
- Dutch nl-NL
- English Australia: en-AU
- English Canada: en-CA
- English India: en-IN
- English New Zealand: en-NZ
- English South Africa: en-ZA
- English UK: en-GB
- English US: en-US
- Finnish fi
- French fr-FR
- Galician gl
- German de-DE
- Hebrew he
- Hungarian hu
- Icelandic is
- Italian it-IT
- Indonesian id
- Japanese ja
- Korean ko
- Latin la
- Mandarin Chinese zh-CN
- Traditional Taiwan zh-TW
- Simplified China zh-CN ?
- Simplified Hong Kong zh-HK
- Yue Chinese (Traditional Hong Kong: zh-yue
- Malaysian ms-MY
- Norwegian no-NO
- Polish pl
- Pig Latin xx-piglatin
- Portuguese pt-PT
- Portuguese (brasil: pt-BR
- Romanian ro-RO
- Russian ru
- Serbian sr-SP
- Slovak sk
- Spanish Argentina: es-AR
- Spanish Bolivia: es-BO
- Spanish Chile: es-CL
- Spanish Colombia: es-CO
- Spanish Costa Rica: es-CR
- Spanish Dominican Republic: es-DO
- Spanish Ecuador: es-EC
- Spanish El Salvador: es-SV
- Spanish Guatemala: es-GT
- Spanish Honduras: es-HN
- Spanish Mexico: es-MX
- Spanish Nicaragua: es-NI
- Spanish Panama: es-PA
- Spanish Paraguay: es-PY
- Spanish Peru: es-PE
- Spanish Puerto Rico: es-PR
- Spanish Spain: es-ES
- Spanish US: es-US
- Spanish Uruguay: es-UY
- Spanish Venezuela: es-VE
- Swedish sv-SE
- Turkish tr
- Zulu zu
-}*/
+
 export const CallPage = (props) => {
   const mainVideo = useRef();
 
@@ -122,7 +40,7 @@ export const CallPage = (props) => {
 
   const userID = props.user._id;
 
-  const [user, setUser] = useState(props.user);
+  const [user, setUser] = useState({});
 
   const [currentUser, setCurrentUser] = useState();
 
@@ -148,15 +66,27 @@ export const CallPage = (props) => {
 
   useEffect(() => {
     getRoom(roomID);
-    setCurrentUser(props.user.firstname);
+    setUser(props.user);
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    setCurrentUser(`${user.firstname} ${user.lastname}`);
+    if (!user._id) {
+      console.log("no user");
+      return;
+    }
+
     navigator.mediaDevices.getUserMedia({ audio: audio, video: video ? videoConstraints : false }).then((stream) => {
-      mainVideo.current.srcObject = stream;
+      console.log(user, stream, roomID);
       userStream.current = stream;
       socketRef.current = io.connect(process.env.REACT_APP_URL);
-      socketRef.current.emit("join-room", roomID, props.user._id || user);
+
+      socketRef.current.emit("join-room", roomID, user);
+
       socketRef.current.on("user-requested", (payload) => {
-        console.log(`user requested admition ${payload.userId}`);
-        setWaitingList((list) => [...list, payload]);
+        console.log(`user requested admition ${payload.user}`);
+        setWaitingList(payload);
         setAdmit(true);
       });
 
@@ -169,30 +99,31 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("all-users", (users) => {
+        console.log("users", users);
         const peers = [];
-        users.forEach((userID) => {
-          const peer = createPeer(userID, socketRef.current.id, stream);
+        users.forEach((newPeer) => {
+          const peer = createPeer(newPeer, user, stream);
           peersRef.current.push({
-            peerID: userID,
             peer,
           });
           peers.push(peer);
         });
         setPeers(peers);
+        mainVideo.current.srcObject = stream;
       });
 
       socketRef.current.on("user-joined", (payload) => {
-        console.log("New User Connected");
+        console.log("New User Connected", payload);
         const peer = addPeer(payload.signal, payload.callerID, stream);
         peersRef.current.push({
-          peerID: payload.callerID,
           peer,
+          user: payload.caller,
         });
         setPeers((users) => [...users, peer]);
       });
 
       socketRef.current.on("receiving-returned-signal", (payload) => {
-        const item = peersRef.current.find((p) => p.peerID.socketId === payload.id);
+        const item = peersRef.current.find((p) => p.user.socketId === payload.id);
         item && item.peer.signal(payload.signal);
       });
 
@@ -207,11 +138,15 @@ export const CallPage = (props) => {
         console.log("call ended");
         window.location.replace("/callEnded");
       });
-      return () => {};
     });
-  }, []);
+    return () => {
+      userStream.current.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    };
+  }, [user]);
 
-  const createPeer = (userToSignal, callerID, stream) => {
+  const createPeer = (userToSignal, caller, stream) => {
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -222,13 +157,13 @@ export const CallPage = (props) => {
 
     peer.on("signal", (signal) => {
       console.log("sending-signal");
-      socketRef.current.emit("sending-signal", { userToSignal, callerID, signal });
+      socketRef.current.emit("sending-signal", { userToSignal, caller, signal });
     });
 
     return peer;
   };
 
-  const addPeer = (incomingSignal, callerID, stream) => {
+  const addPeer = (incomingSignal, caller, stream) => {
     const peer = new Peer({
       initiator: false,
       trickle: false,
@@ -237,7 +172,7 @@ export const CallPage = (props) => {
 
     peer.on("signal", (signal) => {
       console.log("receiving signal");
-      socketRef.current.emit("returning-signal", { signal, callerID });
+      socketRef.current.emit("returning-signal", { signal, caller });
     });
 
     peer.signal(incomingSignal);
@@ -252,11 +187,13 @@ export const CallPage = (props) => {
   };
 
   const admitUser = (payload) => {
-    socketRef.current.emit("admit-user", { roomId: roomID, adminId: userID, ...payload });
-    setWaitingList((list) => list.filter((user) => user !== payload.userId));
+    console.log(payload);
+    socketRef.current.emit("admit-user", { roomId: roomID, adminId: userID, user: payload });
+    setWaitingList((list) => list.filter((user) => user !== payload));
   };
   const declineUser = (payload) => {
-    setWaitingList((list) => list.filter((user) => user !== payload.userId));
+    //decline user
+    setWaitingList((list) => list.filter((user) => user !== payload));
   };
   const setMain = (stream, user) => {
     mainVideo.current.srcObject = stream;
@@ -269,16 +206,15 @@ export const CallPage = (props) => {
   };
   return (
     <ContainerMain>
-      {!user ? (
-        <NameModal setUser={setUser} setVideo={setVideo} setAudio={setAudio} setSpeech={setSpeech} />
+      {!user._id ? (
+        <NameModal setUser={setUser} setVideo={setVideo} setAudio={setAudio} setSpeech={setSpeech} close={LeaveRoom} setSignRecognition={setSignRecognition} />
       ) : (
         <>
-          {admit && <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} setAdmit={setAdmit} />}
+          {admit && waitingList.length > 0 && <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} close={() => setAdmit(false)} />}
           <Row>
             <Col sm={peers.length > 4 || peers.length === 0 ? 12 : 6} className='mt-3'>
               <NameBig>{currentUser}</NameBig>
               <Video autoPlay ref={mainVideo} muted></Video>
-
               <SpeechRecognition audio={audio} lang={language} />
             </Col>
             {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} />)}
