@@ -111,8 +111,8 @@ export const NameBig = styled.div`
   left: 4vmin;
   color: #fff;
   background-color: #000;
-  width: min-content;
-  text-wrap: no-wrap;
+  width: max-content;
+  max-width: 10vw;
   padding: 2px 10px;
 `;
 

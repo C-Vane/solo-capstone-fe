@@ -5,7 +5,6 @@ import { BackDrop, Container, Logo } from "../../Assets/Assets";
 import { Button } from "react-bootstrap";
 
 function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
-  console.log(waitingList);
   return (
     <BackDrop>
       <Container>

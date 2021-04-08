@@ -73,19 +73,16 @@ export const CallPage = (props) => {
   useEffect(() => {
     setCurrentUser(`${user.firstname} ${user.lastname}`);
     if (!user._id) {
-      console.log("no user");
       return;
     }
 
     navigator.mediaDevices.getUserMedia({ audio: audio, video: video ? videoConstraints : false }).then((stream) => {
-      console.log(user, stream, roomID);
       userStream.current = stream;
       socketRef.current = io.connect(process.env.REACT_APP_URL);
 
       socketRef.current.emit("join-room", roomID, user);
 
       socketRef.current.on("user-requested", (payload) => {
-        console.log(`user requested admition ${payload.user}`);
         setWaitingList(payload);
         setAdmit(true);
       });
@@ -102,11 +99,12 @@ export const CallPage = (props) => {
         console.log("users", users);
         const peers = [];
         users.forEach((newPeer) => {
-          const peer = createPeer(newPeer, user, stream);
+          const peer = createPeer(newPeer, { ...user, socketId: socketRef.current.id }, stream);
           peersRef.current.push({
             peer,
+            user: newPeer,
           });
-          peers.push(peer);
+          peers.push({ peer, user });
         });
         setPeers(peers);
         mainVideo.current.srcObject = stream;
@@ -119,17 +117,18 @@ export const CallPage = (props) => {
           peer,
           user: payload.user,
         });
-        setPeers((users) => [...users, peer]);
+        setPeers((users) => [...users, { peer, user: payload.user }]);
       });
 
       socketRef.current.on("receiving-returned-signal", (payload) => {
+        console.log(payload, peersRef.current);
         const item = peersRef.current.find((p) => p.user.socketId === payload.id);
         item && item.peer.signal(payload.signal);
       });
 
       socketRef.current.on("user-disconnected", (userId) => {
         console.log("user disconnected");
-        const index = peersRef.current.findIndex((peer) => peer.peerID === userId);
+        const index = peersRef.current.findIndex((peer) => peer.user.socketId === userId);
         const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index)];
         peersRef.current = [...peers];
         setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index)]);
@@ -189,7 +188,7 @@ export const CallPage = (props) => {
   const admitUser = (payload) => {
     console.log(payload);
     socketRef.current.emit("admit-user", { roomId: roomID, adminId: userID, user: payload });
-    setWaitingList((list) => list.filter((user) => user !== payload));
+    setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
   };
   const declineUser = (payload) => {
     //decline user
