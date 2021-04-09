@@ -18,7 +18,7 @@ const VideoOther = ({ peer, setMain, size }) => {
           {peer.user.firstname} {peer.user.lastname}
         </NameBig>
       )}
-      <Video playsInline autoPlay ref={ref} />
+      <Video playsInline autoPlay ref={ref} muted />
       {size === 3 && <Name>{peer.user && peer.user._id}</Name>}
     </Col>
   );

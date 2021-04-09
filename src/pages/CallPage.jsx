@@ -83,6 +83,7 @@ export const CallPage = (props) => {
       socketRef.current.emit("join-room", roomID, user);
 
       socketRef.current.on("user-requested", (payload) => {
+        console.log("user requested", payload);
         setWaitingList(payload);
         setAdmit(true);
       });
@@ -98,13 +99,14 @@ export const CallPage = (props) => {
       socketRef.current.on("all-users", (users) => {
         console.log("users", users);
         const peers = [];
+        console.log("Important", user);
         users.forEach((newPeer) => {
           const peer = createPeer(newPeer, { ...user, socketId: socketRef.current.id }, stream);
           peersRef.current.push({
             peer,
             user: newPeer,
           });
-          peers.push({ peer, user });
+          peers.push({ peer, user: newPeer });
         });
         setPeers(peers);
         mainVideo.current.srcObject = stream;
