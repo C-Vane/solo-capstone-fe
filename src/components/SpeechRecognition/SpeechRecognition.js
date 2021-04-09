@@ -6,19 +6,25 @@ if (speechRecognitionTool !== undefined) {
   recognition = new speechRecognitionTool();
 }
 
-const SpeechRecognition = ({ audio, lang, text }) => {
+const SpeechRecognition = ({ audio, lang, socket, roomId, user }) => {
   const [speech, setSpeech] = useState("");
   useEffect(() => {
     if (typeof speechRecognitionTool !== "undefined") {
-      handleMic(recognition, lang, setSpeech, audio);
+      handleMic(recognition, lang, handleText, audio);
     }
     return () => {
       recognition.stop();
     };
   }, [audio, lang]);
-  if (text) {
+
+  const handleText = (text) => {
+    setSpeech(text);
+    socket.current && socket.current.emit("subtitles", { roomId, subtitles: text, user });
+  };
+
+  /*  if (text) {
     return <Speech>{text}</Speech>;
-  }
+  } */
   if (typeof speechRecognitionTool === "undefined") {
     return <Speech>No speech available</Speech>;
   }

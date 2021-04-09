@@ -15,7 +15,7 @@ function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
           <div className='p-md-4 ps-1'>
             <Logo />
             <div className='mb-4 p-md-3 py-3'>
-              <h3 className='mb-3'>Users Requestiong admition</h3>
+              <h3 className='mb-3'>Users Requesting admition</h3>
 
               {waitingList.map((user, index) => (
                 <div key={index} className='d-flex'>

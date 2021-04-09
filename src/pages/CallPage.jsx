@@ -10,17 +10,13 @@ import NameModal from "../components/NameModal/NameModal";
 
 import SpeechRecognition from "../components/SpeechRecognition/SpeechRecognition";
 
-import Peer from "simple-peer";
+import { Col, Row } from "react-bootstrap";
 
-import { getFunction } from "../functions/CRUDFunctions";
-
-import styled from "styled-components";
-
-import AcceptModal from "../components/AcceptModal/AcceptModal";
-import { Button, Col, Row } from "react-bootstrap";
 import VideoOther from "../components/VideoOther/VideoOther";
-import { Container } from "@material-ui/core";
+
 import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
+
+import { ButtonLeave, ContainerMain, CreatePeer, GetRoom, AddPeer } from "../Assets/VideoCallFunctions";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
@@ -48,8 +44,6 @@ export const CallPage = (props) => {
 
   const [peers, setPeers] = useState([]);
 
-  const [Room, setRoom] = useState({});
-
   const [language, setLanguage] = useState("en-us");
 
   const [audio, setAudio] = useState(true);
@@ -65,7 +59,7 @@ export const CallPage = (props) => {
   const [admit, setAdmit] = useState(false);
 
   useEffect(() => {
-    getRoom(roomID);
+    GetRoom(roomID, props.setRoom);
     setUser(props.user);
     return () => {};
   }, []);
@@ -78,6 +72,7 @@ export const CallPage = (props) => {
 
     navigator.mediaDevices.getUserMedia({ audio: audio, video: video ? videoConstraints : false }).then((stream) => {
       userStream.current = stream;
+
       socketRef.current = io.connect(process.env.REACT_APP_URL);
 
       socketRef.current.emit("join-room", roomID, user);
@@ -97,11 +92,10 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("all-users", (users) => {
-        console.log("users", users);
         const peers = [];
-        console.log("Important", user);
+        console.log("Important", users);
         users.forEach((newPeer) => {
-          const peer = createPeer(newPeer, { ...user, socketId: socketRef.current.id }, stream);
+          const peer = CreatePeer(newPeer, { ...user, socketId: socketRef.current.id }, stream, socketRef.current);
           peersRef.current.push({
             peer,
             user: newPeer,
@@ -114,7 +108,7 @@ export const CallPage = (props) => {
 
       socketRef.current.on("user-joined", (payload) => {
         console.log("New User Connected", payload);
-        const peer = addPeer(payload.signal, payload.callerID, stream);
+        const peer = AddPeer(payload.signal, payload.callerID, stream, socketRef.current);
         peersRef.current.push({
           peer,
           user: payload.user,
@@ -123,69 +117,38 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("receiving-returned-signal", (payload) => {
-        console.log(payload, peersRef.current);
         const item = peersRef.current.find((p) => p.user.socketId === payload.id);
         item && item.peer.signal(payload.signal);
       });
 
+      socketRef.current.on("text", (payload) => {
+        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
+        if (index !== -1) {
+          console.log(index);
+          const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], text: payload.subtitles }, ...peersRef.current.slice(index + 1)];
+          setPeers(updated);
+        }
+      });
+
       socketRef.current.on("user-disconnected", (userId) => {
         console.log("user disconnected");
-        const index = peersRef.current.findIndex((peer) => peer.user.socketId === userId);
-        const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index)];
+        const index = peersRef.current.findIndex((peer) => peer.user.socketId == userId);
+        const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index + 1)];
         peersRef.current = [...peers];
-        setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index)]);
+        setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index + 1)]);
       });
       socketRef.current.on("call-end", () => {
         console.log("call ended");
         window.location.replace("/callEnded");
       });
     });
+
     return () => {
       userStream.current.getTracks().forEach(function (track) {
         track.stop();
       });
     };
   }, [user]);
-
-  const createPeer = (userToSignal, caller, stream) => {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    });
-    peer.user = userToSignal;
-    console.log("Create new peer", peer.user);
-
-    peer.on("signal", (signal) => {
-      console.log("sending-signal");
-      socketRef.current.emit("sending-signal", { userToSignal, caller, signal });
-    });
-
-    return peer;
-  };
-
-  const addPeer = (incomingSignal, caller, stream) => {
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream,
-    });
-
-    peer.on("signal", (signal) => {
-      console.log("receiving signal");
-      socketRef.current.emit("returning-signal", { signal, caller });
-    });
-
-    peer.signal(incomingSignal);
-
-    return peer;
-  };
-
-  const getRoom = async (id) => {
-    const room = await getFunction("room/" + id);
-    if (room && room._id) setRoom(room);
-    else window.location.replace("/");
-  };
 
   const admitUser = (payload) => {
     console.log(payload);
@@ -194,7 +157,7 @@ export const CallPage = (props) => {
   };
   const declineUser = (payload) => {
     //decline user
-    setWaitingList((list) => list.filter((user) => user !== payload));
+    setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
   };
   const setMain = (stream, user) => {
     mainVideo.current.srcObject = stream;
@@ -205,6 +168,7 @@ export const CallPage = (props) => {
     socketRef.current.emit("end-call", { roomId: roomID, userId: userID });
     window.location.replace("/callEnded");
   };
+
   return (
     <ContainerMain>
       {!user._id ? (
@@ -216,7 +180,7 @@ export const CallPage = (props) => {
             <Col sm={peers.length > 4 || peers.length === 0 ? 12 : 6} className='mt-3'>
               <NameBig>{currentUser}</NameBig>
               <Video autoPlay ref={mainVideo} muted></Video>
-              <SpeechRecognition audio={audio} lang={language} />
+              <SpeechRecognition audio={audio} lang={language} socket={socketRef} user={user} roomId={roomID} />
             </Col>
             {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} />)}
           </Row>
@@ -237,12 +201,4 @@ export const CallPage = (props) => {
   );
 };
 
-const ContainerMain = styled(Container)`
-  max-height: 100vh;
-  padding-top: 10vh;
-`;
-const ButtonLeave = styled(Button)`
-  margin-top: 5vh;
-  align-self: flex-end;
-`;
 export default connect(mapStateToProps, mapDispatchToProps)(CallPage);

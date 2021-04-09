@@ -43,14 +43,6 @@ export const Nav = styled.nav`
     }
   }
 `;
-export const mapStateToProps = (state) => {
-  return state;
-};
-export const mapDispatchToProps = (dispatch) => ({
-  setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
-  setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
-  showErrors: (boolean) => dispatch({ type: "DISPLAY_ERRORS", payload: boolean }),
-});
 
 export const Logo = styled.div`
   width: 10vmin;
@@ -112,7 +104,6 @@ export const NameBig = styled.div`
   color: #fff;
   background-color: #000;
   width: max-content;
-  max-width: 10vw;
   padding: 2px 10px;
 `;
 
@@ -182,3 +173,12 @@ export const handleMic = (mic, language, setSpeech, audio) => {
     return error;
   };
 };
+export const mapStateToProps = (state) => {
+  return state;
+};
+export const mapDispatchToProps = (dispatch) => ({
+  setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
+  setRoom: (room) => dispatch({ type: "SET_ROOM", payload: room }),
+  setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
+  showErrors: (boolean) => dispatch({ type: "DISPLAY_ERRORS", payload: boolean }),
+});
