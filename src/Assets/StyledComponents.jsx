@@ -1,3 +1,4 @@
+import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import img from "./noBackground.png";
 
@@ -133,52 +134,12 @@ export const BackDrop = styled.div`
   font-family: "Tinos", serif;
 `;
 
-export const Container = styled.div`
+export const ContainerAdmitModal = styled.div`
   height: 80vh;
   margin: auto;
   width: 50vmax;
 `;
-
-export const handleMic = (mic, language, setSpeech, audio) => {
-  if (audio) {
-    mic.start();
-    mic.lang = language || "en-US";
-    mic.continuous = false;
-    mic.interimResults = true;
-
-    mic.onend = () => {
-      mic.start();
-    };
-  } else {
-    mic.stop();
-    mic.onend = () => {
-      console.log("Stopped Mic on Click");
-    };
-  }
-  mic.onstart = () => {
-    setTimeout(() => {
-      setSpeech("");
-    }, 2000);
-  };
-
-  mic.onresult = (event) => {
-    const transcript = Array.from(event.results)
-      .map((result) => result[0])
-      .map((result) => result.transcript)
-      .join("");
-    setSpeech(transcript);
-  };
-  mic.onerror = (error) => {
-    mic.stop();
-    return error;
-  };
-};
-export const mapStateToProps = (state) => {
-  return state;
-};
-export const mapDispatchToProps = (dispatch) => ({
-  setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
-  setRoom: (room) => dispatch({ type: "SET_ROOM", payload: room }),
-  setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
-  showErrors: (boolean) => dispatch({ type: "DISPLAY_ERRORS", payload: boolean }),
-});
+export const ContainerOtherVideo = styled(Container)`
+  width: 100%;
+  maxheight: 20vh;
+`;

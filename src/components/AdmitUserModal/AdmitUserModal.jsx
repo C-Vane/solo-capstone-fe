@@ -1,13 +1,13 @@
 import { Avatar, IconButton, Paper } from "@material-ui/core";
 import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
-import { BackDrop, Container, Logo } from "../../Assets/Assets";
+import { BackDrop, ContainerAdmitModal, Logo } from "../../Assets/StyledComponents";
 import { Button } from "react-bootstrap";
 
 function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
   return (
     <BackDrop>
-      <Container>
+      <ContainerAdmitModal>
         <Paper className='w-xs-100 m-auto text-center' elevation={3}>
           <IconButton aria-label='close' className='float-right' onClick={close}>
             <CloseIcon />
@@ -37,7 +37,7 @@ function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
             </Button>
           </div>
         </Paper>
-      </Container>
+      </ContainerAdmitModal>
     </BackDrop>
   );
 }

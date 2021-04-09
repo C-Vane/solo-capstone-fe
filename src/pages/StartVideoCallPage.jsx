@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { Col, Container, Row } from "react-bootstrap";
 import { postFunction } from "../functions/CRUDFunctions";
+import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
 
 export const StartVideoCallPage = (props) => {
   const createRoom = async () => {
@@ -38,9 +39,5 @@ export const StartVideoCallPage = (props) => {
 const StartCall = styled.section`
   margin-top: 20vh;
 `;
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartVideoCallPage);

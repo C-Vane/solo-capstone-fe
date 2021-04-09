@@ -1,8 +1,7 @@
 import { Paper, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import React, { useState } from "react";
-import styled from "styled-components";
-import { BackDrop, Container, Logo } from "../../Assets/Assets";
+import { BackDrop, ContainerAdmitModal, Logo } from "../../Assets/StyledComponents";
 import { SignIn } from "../SignIn/SignIn";
 import { SignUp } from "../SignUp/SignUp";
 import Join from "./Join";
@@ -18,7 +17,7 @@ const GetStarted = (props) => {
   };
   return (
     <BackDrop>
-      <Container>
+      <ContainerAdmitModal>
         <Paper className='w-xs-100 m-auto text-center' elevation={3}>
           <IconButton aria-label='close' className='float-right' onClick={props.close}>
             <CloseIcon />
@@ -43,7 +42,7 @@ const GetStarted = (props) => {
             </small>
           </div>
         </Paper>
-      </Container>
+      </ContainerAdmitModal>
     </BackDrop>
   );
 };

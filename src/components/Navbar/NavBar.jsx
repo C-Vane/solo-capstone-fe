@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Bar, Nav, Logo, NavItem, SIGN_IN, SIGN_UP, mapStateToProps, mapDispatchToProps } from "../../Assets/Assets";
+import { Bar, Nav, Logo, NavItem, SIGN_IN, SIGN_UP } from "../../Assets/StyledComponents";
+import { mapDispatchToProps, mapStateToProps } from "../../Assets/VideoCallFunctions";
 import { getFunction, postFunction } from "../../functions/CRUDFunctions";
 import GetStarted from "../GetStarted/GetStarted";
 

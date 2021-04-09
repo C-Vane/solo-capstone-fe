@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, IconButton, Paper, TextField, Tooltip } from "@material-ui/core";
 import React, { useState } from "react";
-import { BackDrop, Container, Logo } from "../../Assets/Assets";
+import { BackDrop, ContainerAdmitModal, Logo } from "../../Assets/StyledComponents";
 import CloseIcon from "@material-ui/icons/Close";
 import { DeleteOutline, Mic, MicOffOutlined, SpeakerNotes, SpeakerNotesOffOutlined, ThumbsUpDown, ThumbsUpDownOutlined, Videocam, VideocamOffOutlined } from "@material-ui/icons";
 import { Button, OverlayTrigger, Popover } from "react-bootstrap";
@@ -30,7 +30,7 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
 
   return (
     <BackDrop>
-      <Container>
+      <ContainerAdmitModal>
         <Paper className='w-xs-100 m-auto text-center' elevation={3}>
           <IconButton aria-label='close' className='float-right' onClick={close}>
             <CloseIcon />
@@ -45,10 +45,30 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                 <TextField className='m-3' autoComplete='url' value={image} onChange={(e) => setImage(e.target.value)} label='Profile Image URL' type='url' />
                 <div className='d-flex justify-content-around mt-2'>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverVideo}>
-                    <Checkbox icon={<VideocamOffOutlined />} checkedIcon={<Videocam />} name='video' aria-label='Video Camera' checked={videoCheck} onChange={(e) => setVideoCheck(e.target.checked)} />
+                    <Checkbox
+                      icon={<VideocamOffOutlined />}
+                      checkedIcon={<Videocam />}
+                      name='video'
+                      aria-label='Video Camera'
+                      checked={videoCheck}
+                      onChange={(e) => {
+                        setVideoCheck(e.target.checked);
+                        !e.target.checked && setSignRecognitionCheck(false);
+                      }}
+                    />
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverAudio}>
-                    <Checkbox icon={<MicOffOutlined />} checkedIcon={<Mic />} name='audio' aria-label='Audio' checked={audioCheck} onChange={(e) => setAudioCheck(e.target.checked)} />
+                    <Checkbox
+                      icon={<MicOffOutlined />}
+                      checkedIcon={<Mic />}
+                      name='audio'
+                      aria-label='Audio'
+                      checked={audioCheck}
+                      onChange={(e) => {
+                        setAudioCheck(e.target.checked);
+                        !e.target.checked && setSpeechCheck(false);
+                      }}
+                    />
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSpeech}>
                     <Checkbox
@@ -57,7 +77,10 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                       name='speech'
                       aria-label='Speech to text recognition'
                       checked={speechCheck}
-                      onChange={(e) => setSpeechCheck(e.target.checked)}
+                      onChange={(e) => {
+                        setSpeechCheck(e.target.checked);
+                        e.target.checked ? setAudioCheck(true) : setSignRecognitionCheck(false);
+                      }}
                     />
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSign}>
@@ -67,7 +90,10 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                       name='signLanguage'
                       aria-label='Sign language recognition'
                       checked={signRecognitionCheck}
-                      onChange={(e) => setSignRecognitionCheck(e.target.checked)}
+                      onChange={(e) => {
+                        setSignRecognitionCheck(e.target.checked);
+                        e.target.checked ? setVideoCheck(true) : setSpeechCheck(false);
+                      }}
                     />
                   </OverlayTrigger>
                 </div>
@@ -81,7 +107,7 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
             </div>
           </div>
         </Paper>
-      </Container>
+      </ContainerAdmitModal>
     </BackDrop>
   );
 }

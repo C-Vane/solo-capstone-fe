@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { handleMic, Speech } from "../../Assets/Assets";
+import { Speech } from "../../Assets/StyledComponents";
+import { handleMic } from "../../Assets/VideoCallFunctions";
+
 const speechRecognitionTool = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
 if (speechRecognitionTool !== undefined) {

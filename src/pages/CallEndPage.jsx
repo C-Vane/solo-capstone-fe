@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Col, Container, Row } from "react-bootstrap";
+import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
 
 export const StartVideoCallPage = (props) => {
   return (
@@ -19,8 +20,5 @@ export const StartVideoCallPage = (props) => {
 const CallEnded = styled.section`
   margin-top: 20vh;
 `;
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartVideoCallPage);

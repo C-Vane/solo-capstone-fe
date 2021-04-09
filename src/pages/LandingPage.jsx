@@ -1,13 +1,13 @@
 import { Grid, Input } from "@material-ui/core";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { mapStateToProps, mapDispatchToProps, SIGN_UP, SIGN_IN } from "../Assets/Assets";
+import { SIGN_IN } from "../Assets/StyledComponents";
 import styled from "styled-components";
 import GetStarted from "../components/GetStarted/GetStarted";
 import { Button, Container } from "react-bootstrap";
 import { getFunction, postFunction } from "../functions/CRUDFunctions";
 import { Carousel } from "react-responsive-carousel";
-import styles from "react-responsive-carousel/lib/styles/carousel.min.css";
+import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
 
 export const LandingPage = ({ user, history }) => {
   const [getStarted, setGetStarted] = useState(false);
@@ -67,7 +67,8 @@ export const LandingPage = ({ user, history }) => {
             <i className={error.length > 0 ? "text-danger" : "d-none"}>{error}</i>
           </Grid>
           <Grid item sm={6}>
-            <Carousel showArrows={true} infiniteLoop={true} showThumbs={false} autoPlay={true} width={"80%"} showStatus={false}>
+            <div>
+              {/*<Carousel showArrows={true} infiniteLoop={true} showThumbs={false} autoPlay={true} width={"80%"} showStatus={false}>
               <div>
                 <img></img>
                 <p>hello</p>
@@ -85,6 +86,8 @@ export const LandingPage = ({ user, history }) => {
                 <p>jkfgakj</p>
               </div>
             </Carousel>
+            */}
+            </div>
           </Grid>
         </Grid>
       </MainContainer>

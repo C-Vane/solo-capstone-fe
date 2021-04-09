@@ -6,7 +6,6 @@ import { getFunction } from "../functions/CRUDFunctions";
 
 export const ContainerMain = styled(Container)`
   max-height: 100vh;
-  padding-top: 10vh;
 `;
 export const ButtonLeave = styled(Button)`
   margin-top: 5vh;
@@ -52,3 +51,47 @@ export const GetRoom = async (id, setRoom) => {
   if (room && room._id) setRoom(room);
   else window.location.replace("/");
 };
+
+export const handleMic = (mic, language, setSpeech, audio) => {
+  if (audio) {
+    mic.start();
+    mic.lang = language || "en-US";
+    mic.continuous = false;
+    mic.interimResults = true;
+
+    mic.onend = () => {
+      mic.start();
+    };
+  } else {
+    mic.stop();
+    mic.onend = () => {
+      console.log("Stopped Mic on Click");
+    };
+  }
+  mic.onstart = () => {
+    setTimeout(() => {
+      setSpeech("");
+    }, 2000);
+  };
+
+  mic.onresult = (event) => {
+    const transcript = Array.from(event.results)
+      .map((result) => result[0])
+      .map((result) => result.transcript)
+      .join("");
+    setSpeech(transcript);
+  };
+  mic.onerror = (error) => {
+    mic.stop();
+    return error;
+  };
+};
+export const mapStateToProps = (state) => {
+  return state;
+};
+export const mapDispatchToProps = (dispatch) => ({
+  setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
+  setRoom: (room) => dispatch({ type: "SET_ROOM", payload: room }),
+  setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
+  showErrors: (boolean) => dispatch({ type: "DISPLAY_ERRORS", payload: boolean }),
+});

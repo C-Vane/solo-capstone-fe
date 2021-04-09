@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Col } from "react-bootstrap";
 import { connect } from "react-redux";
-import { mapDispatchToProps, mapStateToProps, Video, NameBig, Name, Speech } from "../../Assets/Assets";
+import { Video, NameBig, Name, Speech } from "../../Assets/StyledComponents";
+import { mapDispatchToProps, mapStateToProps } from "../../Assets/VideoCallFunctions";
 
 const VideoOther = (props) => {
   const { peer, setMain, size } = props;
   const ref = useRef();
   const [user, setUser] = useState({});
   const [admin, setAdmin] = useState(false);
+  const [muted, setMuted] = useState(false);
   useEffect(() => {
     setUser(peer.user);
     if (props.user) {
@@ -19,9 +21,10 @@ const VideoOther = (props) => {
   }, []);
 
   const changeStream = () => {
-    const { stream, newUser } = setMain(ref.current.srcObject, user);
+    const { stream, newUser, muted } = setMain(ref.current.srcObject, user);
     ref.current.srcObject = stream;
     setUser(newUser);
+    setMuted(muted);
   };
   console.log(props);
   return (
@@ -31,7 +34,7 @@ const VideoOther = (props) => {
           {user.firstname} {user.lastname}
         </NameBig>
       )}
-      <Video playsInline autoPlay ref={ref} />
+      <Video playsInline autoPlay ref={ref} muted={muted} />
       {size === 6 && <div className='m-auto'>{peer.text && <Speech>{peer.text}</Speech>}</div>}
       {size === 3 && <Name>{user.firstname && user.lastname}</Name>}
     </Col>

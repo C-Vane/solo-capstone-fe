@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { postFunction } from "../../functions/CRUDFunctions";
+import { mapDispatchToProps, mapStateToProps } from "../../Assets/VideoCallFunctions";
 
 export const SignUp = (props) => {
   const [email, setEmail] = useState("");
@@ -55,9 +56,5 @@ export const SignUp = (props) => {
     </div>
   );
 };
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { postFunction } from "../../functions/CRUDFunctions";
+import { mapDispatchToProps, mapStateToProps } from "../../Assets/VideoCallFunctions";
 
 export const SignIn = (props) => {
   const [email, setEmail] = useState("");
@@ -38,14 +39,5 @@ export const SignIn = (props) => {
     </div>
   );
 };
-
-const mapStateToProps = (state) => state;
-
-const mapDispatchToProps = (dispatch) => ({
-  setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
-  setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
-  showErrors: (boolean) => dispatch({ type: "DISPLAY_ERRORS", payload: boolean }),
-  setLoading: (boolean) => dispatch({ type: "SET_LOADING", payload: boolean }),
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import io, { Socket } from "socket.io-client";
 
-import { mapDispatchToProps, mapStateToProps, Video, NameBig } from "../Assets/Assets";
+import { Video, NameBig, ContainerOtherVideo } from "../Assets/StyledComponents";
 
 import NameModal from "../components/NameModal/NameModal";
 
@@ -16,7 +16,8 @@ import VideoOther from "../components/VideoOther/VideoOther";
 
 import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
 
-import { ButtonLeave, ContainerMain, CreatePeer, GetRoom, AddPeer } from "../Assets/VideoCallFunctions";
+import { ButtonLeave, ContainerMain, CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps } from "../Assets/VideoCallFunctions";
+import Scrollbars from "react-custom-scrollbars";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
@@ -58,6 +59,7 @@ export const CallPage = (props) => {
 
   const [admit, setAdmit] = useState(false);
 
+  const [muted, setMuted] = useState(true);
   useEffect(() => {
     GetRoom(roomID, props.setRoom);
     setUser(props.user);
@@ -159,9 +161,14 @@ export const CallPage = (props) => {
     //decline user
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
   };
-  const setMain = (stream, user) => {
+  const setMain = (stream, newUser) => {
+    const oldStream = mainVideo.current.srcObject;
+    const oldUser = currentUser;
     mainVideo.current.srcObject = stream;
-    setCurrentUser(user);
+    setCurrentUser(newUser);
+    newUser._id === user._id ? setMuted(true) : setMuted(false);
+
+    return { stream: oldStream, newUser: oldUser, muted: !muted };
   };
 
   const LeaveRoom = () => {
@@ -179,18 +186,20 @@ export const CallPage = (props) => {
           <Row>
             <Col sm={peers.length > 4 || peers.length === 0 ? 12 : 6} className='mt-3'>
               <NameBig>{currentUser}</NameBig>
-              <Video autoPlay ref={mainVideo} muted></Video>
+              <Video autoPlay ref={mainVideo} muted={muted}></Video>
               <SpeechRecognition audio={audio} lang={language} socket={socketRef} user={user} roomId={roomID} />
             </Col>
             {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} />)}
           </Row>
 
           {peers.length > 3 && (
-            <Row>
-              {peers.map((peer, index) => (
-                <VideoOther key={index} peer={peer} setMain={setMain} size={3} />
-              ))}
-            </Row>
+            <Scrollbars style={{ width: "100%", maxHeight: "20vh" }}>
+              <ContainerOtherVideo>
+                {peers.map((peer, index) => (
+                  <VideoOther key={index} peer={peer} setMain={setMain} size={3} />
+                ))}
+              </ContainerOtherVideo>
+            </Scrollbars>
           )}
           <ButtonLeave variant='outline-danger' onClick={LeaveRoom}>
             Leave
