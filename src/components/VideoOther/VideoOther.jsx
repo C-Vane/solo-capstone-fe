@@ -1,27 +1,41 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Col } from "react-bootstrap";
-import { Video, Name, NameBig } from "../../Assets/Assets";
+import { connect } from "react-redux";
+import { mapDispatchToProps, mapStateToProps, Video, NameBig, Name, Speech } from "../../Assets/Assets";
 
-const VideoOther = ({ peer, setMain, size }) => {
+const VideoOther = (props) => {
+  const { peer, setMain, size } = props;
   const ref = useRef();
-
+  const [user, setUser] = useState({});
+  const [admin, setAdmin] = useState(false);
   useEffect(() => {
+    setUser(peer.user);
+    if (props.user) {
+      props.room.admin.user._id == props.user._id && setAdmin(true);
+    }
     peer.peer.on("stream", (stream) => {
       ref.current.srcObject = stream;
     });
   }, []);
-  console.log(peer);
+
+  const changeStream = () => {
+    const { stream, newUser } = setMain(ref.current.srcObject, user);
+    ref.current.srcObject = stream;
+    setUser(newUser);
+  };
+  console.log(props);
   return (
-    <Col sm={size} onClick={() => setMain && setMain(ref.current.srcObject, peer.user)} className='mt-3'>
+    <Col xs={size} onClick={() => setMain && changeStream} className='mt-3'>
       {size === 6 && (
         <NameBig>
-          {peer.user.firstname} {peer.user.lastname}
+          {user.firstname} {user.lastname}
         </NameBig>
       )}
-      <Video playsInline autoPlay ref={ref} muted />
-      {size === 3 && <Name>{peer.user && peer.user._id}</Name>}
+      <Video playsInline autoPlay ref={ref} />
+      {size === 6 && <div className='m-auto'>{peer.text && <Speech>{peer.text}</Speech>}</div>}
+      {size === 3 && <Name>{user.firstname && user.lastname}</Name>}
     </Col>
   );
 };
 
-export default VideoOther;
+export default connect(mapStateToProps, mapDispatchToProps)(VideoOther);
