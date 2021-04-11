@@ -10,6 +10,7 @@ if (speechRecognitionTool !== undefined) {
 
 const SpeechRecognition = ({ audio, lang, socket, roomId, user }) => {
   const [speech, setSpeech] = useState("");
+
   useEffect(() => {
     if (typeof speechRecognitionTool !== "undefined") {
       handleMic(recognition, lang, handleText, audio);

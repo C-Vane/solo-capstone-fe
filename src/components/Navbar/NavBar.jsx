@@ -44,7 +44,6 @@ export const NavBar = (props) => {
             <div>
               <Link to='/' className={location.pathname === "/" ? "active" : ""}>
                 <NavItem>
-                  {" "}
                   <Home /> <span className='d-none d-md-block'>Home</span>
                 </NavItem>
               </Link>

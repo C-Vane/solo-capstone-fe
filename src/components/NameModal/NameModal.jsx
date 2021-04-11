@@ -1,12 +1,16 @@
-import { Checkbox, FormControlLabel, IconButton, Paper, TextField, Tooltip } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grow, IconButton, Paper, TextField } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import React, { useState } from "react";
 import { BackDrop, ContainerAdmitModal, Logo } from "../../Assets/StyledComponents";
 import CloseIcon from "@material-ui/icons/Close";
-import { DeleteOutline, Mic, MicOffOutlined, SpeakerNotes, SpeakerNotesOffOutlined, ThumbsUpDown, ThumbsUpDownOutlined, Videocam, VideocamOffOutlined } from "@material-ui/icons";
-import { Button, OverlayTrigger, Popover } from "react-bootstrap";
+import { Mic, MicOffOutlined, SpeakerNotes, SpeakerNotesOffOutlined, ThumbsUpDown, ThumbsUpDownOutlined, Videocam, VideocamOffOutlined } from "@material-ui/icons";
+import { Button, OverlayTrigger } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
+import { popoverAudio, popoverSign, popoverSpeech, popoverVideo } from "../../Assets/PopOvers";
+import { languageOptions } from "../../Assets/languageOptions";
 
-function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecognition }) {
+function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition, setLanguage }) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [image, setImage] = useState("");
@@ -14,25 +18,38 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
   const [audioCheck, setAudioCheck] = useState(false);
   const [speechCheck, setSpeechCheck] = useState(false);
   const [signRecognitionCheck, setSignRecognitionCheck] = useState(true);
+  const [language, setLanguageOption] = useState("en-us");
+  const languageList = Object.keys(languageOptions);
+
   const joinCall = (e) => {
     e.preventDefault();
-    setUser({
+    const user = {
       firstname: name,
       lastname: surname,
       _id: uuidv4(),
       img: image,
-    });
+    };
+    setUser(user);
+    window.localStorage.setItem("user", JSON.stringify(user));
     setAudio(audioCheck);
+    setLanguage(language);
     setVideo(videoCheck);
     setSpeech(speechCheck);
     setSignRecognition(signRecognitionCheck);
+  };
+
+  const Close = () => {
+    window.location.replace("/");
+  };
+  const ChangeLanguage = (lang) => {
+    setLanguageOption(languageOptions[lang]);
   };
 
   return (
     <BackDrop>
       <ContainerAdmitModal>
         <Paper className='w-xs-100 m-auto text-center' elevation={3}>
-          <IconButton aria-label='close' className='float-right' onClick={close}>
+          <IconButton aria-label='close' className='float-right' onClick={Close}>
             <CloseIcon />
           </IconButton>
           <div className='p-md-4 ps-1'>
@@ -46,6 +63,7 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                 <div className='d-flex justify-content-around mt-2'>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverVideo}>
                     <Checkbox
+                      color='dark'
                       icon={<VideocamOffOutlined />}
                       checkedIcon={<Videocam />}
                       name='video'
@@ -59,6 +77,7 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverAudio}>
                     <Checkbox
+                      color='dark'
                       icon={<MicOffOutlined />}
                       checkedIcon={<Mic />}
                       name='audio'
@@ -72,6 +91,7 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSpeech}>
                     <Checkbox
+                      color='dark'
                       icon={<SpeakerNotesOffOutlined />}
                       checkedIcon={<SpeakerNotes />}
                       name='speech'
@@ -85,6 +105,7 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSign}>
                     <Checkbox
+                      color='dark'
                       icon={<ThumbsUpDownOutlined />}
                       checkedIcon={<ThumbsUpDown />}
                       name='signLanguage'
@@ -97,7 +118,18 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
                     />
                   </OverlayTrigger>
                 </div>
-
+                <div>
+                  <Grow in={speechCheck}>
+                    <Autocomplete
+                      id='combo-box-demo'
+                      options={languageList}
+                      getOptionLabel={(option) => option}
+                      style={{ width: 300 }}
+                      renderInput={(params) => <TextField {...params} label='Language' variant='outlined' />}
+                      onChange={(e) => ChangeLanguage(e.target.innerText)}
+                    />
+                  </Grow>
+                </div>
                 <div className='my-4'>
                   <Button variant='outline-dark' className='m-auto w-md-50 w-75 rounded-0' type='submit'>
                     JOIN CALL
@@ -111,36 +143,5 @@ function NameModal({ close, setAudio, setVideo, setUser, setSpeech, setSignRecog
     </BackDrop>
   );
 }
-const popoverVideo = (
-  <Popover className='z4'>
-    <Popover.Title as='h3'>Video</Popover.Title>
-    <Popover.Content>
-      And here's some <strong>amazing</strong> content. It's very engaging. right?
-    </Popover.Content>
-  </Popover>
-);
-const popoverAudio = (
-  <Popover className='z4'>
-    <Popover.Title as='h3'>Audio</Popover.Title>
-    <Popover.Content>
-      And here's some <strong>amazing</strong> content. It's very engaging. right?
-    </Popover.Content>
-  </Popover>
-);
-const popoverSpeech = (
-  <Popover className='z4'>
-    <Popover.Title as='h3'>Speech to text</Popover.Title>
-    <Popover.Content>
-      And here's some <strong>amazing</strong> content. It's very engaging. right?
-    </Popover.Content>
-  </Popover>
-);
-const popoverSign = (
-  <Popover className='z4'>
-    <Popover.Title as='h3'>Sign language</Popover.Title>
-    <Popover.Content>
-      And here's some <strong>amazing</strong> content. It's very engaging. right?
-    </Popover.Content>
-  </Popover>
-);
+
 export default NameModal;

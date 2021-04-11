@@ -17,3 +17,12 @@ body {
 #simple-menu li:hover {
   color: #2c3531;
 }
+
+#Chat-Room .MuiPopover-paper {
+  max-width: calc(100% - 32px);
+  min-width: 300px !important;
+  max-height: 400px !important;
+  min-height: 150px !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}

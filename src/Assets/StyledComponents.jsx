@@ -1,5 +1,6 @@
-import { Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import styled from "styled-components";
+import { Container } from "@material-ui/core";
 import img from "./noBackground.png";
 
 export const SIGN_IN = "Sign In";
@@ -77,7 +78,7 @@ export const NavItem = styled.div`
 
 export const Speech = styled.div`
   position: relative;
-  z-index: 999;
+  z-index: 1;
   top: -10vmin;
   color: #fff;
   background-color: #000;
@@ -89,7 +90,7 @@ export const Speech = styled.div`
 export const Name = styled.div`
   position: relative;
   font-size: 15px;
-  z-index: 999;
+  z-index: 1;
   top: -20px;
   color: #fff;
   background-color: #000;
@@ -99,7 +100,7 @@ export const Name = styled.div`
 export const NameBig = styled.div`
   position: absolute;
   font-size: 3vmin;
-  z-index: 999;
+  z-index: 1;
   top: 4vmin;
   left: 4vmin;
   color: #fff;
@@ -107,10 +108,16 @@ export const NameBig = styled.div`
   width: max-content;
   padding: 2px 10px;
 `;
+export const OtherOptions = styled.div`
+  position: absolute;
+  top: 4vmin;
+  right: 4vmin;
+  z-index: 2;
+`;
 
 export const Video = styled.video`
   max-width: 100vw;
-  max-height: 100vh;
+  max-height: 85vh;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -119,6 +126,15 @@ export const Video = styled.video`
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   border-radius: 7px;
+`;
+export const VideoImage = styled.img`
+  position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 `;
 
 export const BackDrop = styled.div`
@@ -139,7 +155,16 @@ export const ContainerAdmitModal = styled.div`
   margin: auto;
   width: 50vmax;
 `;
-export const ContainerOtherVideo = styled(Container)`
+export const ContainerOtherVideo = styled.div`
+  display: flex;
   width: 100%;
-  maxheight: 20vh;
+  max-height: 20vh;
+`;
+export const ContainerMain = styled(Container)`
+  max-height: 100vh;
+`;
+export const DivHalf = styled.div`
+  min-width: 40%;
+  display: flex;
+  flex-shrink: 0;
 `;

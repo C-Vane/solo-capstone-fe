@@ -1,16 +1,5 @@
-import { Button } from "react-bootstrap";
-import styled from "styled-components";
-import { Container } from "@material-ui/core";
 import Peer from "simple-peer";
 import { getFunction } from "../functions/CRUDFunctions";
-
-export const ContainerMain = styled(Container)`
-  max-height: 100vh;
-`;
-export const ButtonLeave = styled(Button)`
-  margin-top: 5vh;
-  align-self: flex-end;
-`;
 
 export const CreatePeer = (userToSignal, caller, stream, socket) => {
   const peer = new Peer({
