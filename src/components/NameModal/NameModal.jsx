@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { popoverAudio, popoverSign, popoverSpeech, popoverVideo } from "../../Assets/PopOvers";
 import { languageOptions } from "../../Assets/languageOptions";
 
-function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition, setLanguage }) {
+function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition, setLanguage, user, setOptions }) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [image, setImage] = useState("");
@@ -23,19 +23,22 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
 
   const joinCall = (e) => {
     e.preventDefault();
-    const user = {
-      firstname: name,
-      lastname: surname,
-      _id: uuidv4(),
-      img: image,
-    };
-    setUser(user);
-    window.localStorage.setItem("user", JSON.stringify(user));
+    if (user) {
+      const user = {
+        firstname: name,
+        lastname: surname,
+        _id: uuidv4(),
+        img: image,
+      };
+      setUser(user);
+      window.localStorage.setItem("user", JSON.stringify(user));
+    }
     setAudio(audioCheck);
     setLanguage(language);
     setVideo(videoCheck);
     setSpeech(speechCheck);
     setSignRecognition(signRecognitionCheck);
+    setOptions(false);
   };
 
   const Close = () => {
@@ -57,9 +60,13 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
 
             <div className='mb-4 p-md-3 py-3'>
               <form onSubmit={joinCall} className='d-flex flex-column p-md-4 p-2 mt-3'>
-                <TextField className='m-3' autoComplete='given-name' value={name} onChange={(e) => setName(e.target.value)} label='Your name' type='text' required />
-                <TextField className='m-3' autoComplete='family-name' value={surname} onChange={(e) => setSurname(e.target.value)} label='Your Surname' type='text' required />
-                <TextField className='m-3' autoComplete='url' value={image} onChange={(e) => setImage(e.target.value)} label='Profile Image URL' type='url' />
+                {user && (
+                  <>
+                    <TextField className='m-3' autoComplete='given-name' value={name} onChange={(e) => setName(e.target.value)} label='Your name' type='text' required />
+                    <TextField className='m-3' autoComplete='family-name' value={surname} onChange={(e) => setSurname(e.target.value)} label='Your Surname' type='text' required />
+                    <TextField className='m-3' autoComplete='url' value={image} onChange={(e) => setImage(e.target.value)} label='Profile Image URL' type='url' />
+                  </>
+                )}
                 <div className='d-flex justify-content-around mt-2'>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverVideo}>
                     <Checkbox

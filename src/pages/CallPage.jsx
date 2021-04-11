@@ -19,6 +19,8 @@ import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
 import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps } from "../Assets/VideoCallFunctions";
 import Scrollbars from "react-custom-scrollbars";
 import Controls from "../components/Controls/Controls";
+import { Grow } from "@material-ui/core";
+import Slide from "@material-ui/core/Slide";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
@@ -40,9 +42,9 @@ export const CallPage = (props) => {
 
   const [user, setUser] = useState({});
 
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState("");
 
-  const [videoStreams, setVideoStreams] = useState([]);
+  const [setOptions, setSetOptions] = useState(true);
 
   const [peers, setPeers] = useState([]);
 
@@ -64,10 +66,6 @@ export const CallPage = (props) => {
 
   const [admin, setAdmin] = useState(false);
 
-  const [settings, setSettings] = useState(false);
-
-  const [chat, setChat] = useState(false);
-
   const [invite, setInvite] = useState(null);
 
   const [snackbar, setSnackBar] = useState([]);
@@ -85,14 +83,32 @@ export const CallPage = (props) => {
 
   useEffect(() => {
     setCurrentUser(`${user.firstname} ${user.lastname}`);
-
+    console.log(setOptions);
     if (!user._id || !props.room.admin) {
-      props.user._id && setUser(props.user);
+      console.log("blocked by user");
+
+      if (props.user._id) {
+        setUser(props.user);
+        return;
+      }
+
       const savedUser = JSON.parse(window.localStorage.getItem("user"));
-      savedUser && savedUser._id && setUser(savedUser) && props.setUser(savedUser);
+      if (savedUser && savedUser._id) {
+        setUser(savedUser) && props.setUser(savedUser);
+        return;
+      }
       return;
     }
     props.room.admin && user && props.room.admin.user == user._id && setAdmin(true);
+    props.room._id && setWaitingList(props.room.waitingList);
+
+    console.log(waitingList);
+
+    if (setOptions) {
+      console.log("blocked by options");
+      return;
+    }
+
     navigator.mediaDevices.getUserMedia({ audio: true, video: videoConstraints }).then((stream) => {
       userStream.current = stream;
       MuteUnmuteAudio(audio);
@@ -113,12 +129,14 @@ export const CallPage = (props) => {
         const peers = [];
         console.log("Important", users);
         users.forEach((newPeer) => {
-          const peer = CreatePeer(newPeer, { ...user, socketId: socketRef.current.id }, userStream.current, socketRef.current);
-          peersRef.current.push({
-            peer,
-            user: newPeer,
-          });
-          peers.push({ peer, user: newPeer });
+          if (newPeer.socketId) {
+            const peer = CreatePeer(newPeer, { ...user, socketId: socketRef.current.id }, userStream.current, socketRef.current);
+            peersRef.current.push({
+              peer,
+              user: newPeer,
+            });
+            peers.push({ peer, user: newPeer });
+          }
         });
         setPeers(peers);
         mainVideo.current.srcObject = userStream.current;
@@ -185,7 +203,7 @@ export const CallPage = (props) => {
         track.stop();
       });
     };
-  }, [user, props.room]);
+  }, [user, props.room, setOptions]);
 
   const admitUser = (payload) => {
     console.log(payload);
@@ -195,6 +213,7 @@ export const CallPage = (props) => {
   const declineUser = (payload) => {
     //decline user
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
+    socketRef.current.emit("decline-user", { roomId: roomID, adminId: userID, user: payload });
   };
   const setMain = (stream, newUser) => {
     const oldStream = mainVideo.current.srcObject;
@@ -240,11 +259,25 @@ export const CallPage = (props) => {
   };
   return (
     <ContainerMain>
-      {!user._id ? (
-        <NameModal setUser={updateUser} setVideo={setVideo} setAudio={setAudio} setSpeech={setSpeech} setSignRecognition={setSignRecognition} setLanguage={setLanguage} />
-      ) : (
+      <Grow in={setOptions} mountOnEnter unmountOnExit disableStrictModeCompat={true} timeOut={1000}>
+        <NameModal
+          setUser={updateUser}
+          user={!user._id}
+          setOptions={setSetOptions}
+          setVideo={setVideo}
+          setAudio={setAudio}
+          setSpeech={setSpeech}
+          setSignRecognition={setSignRecognition}
+          setLanguage={setLanguage}
+        />
+      </Grow>
+      {!setOptions && (
         <>
-          {admit && waitingList.length > 0 && <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} close={() => setAdmit(false)} />}
+          <Slide direction='up' in={admit && waitingList.length > 0} mountOnEnter unmountOnExit>
+            <div>
+              <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} close={() => setAdmit(false)} />
+            </div>
+          </Slide>
           <Row>
             <Col sm={peers.length > 3 || peers.length === 0 ? 12 : 6} className='mt-3'>
               <NameBig>{currentUser}</NameBig>

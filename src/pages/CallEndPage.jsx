@@ -8,11 +8,10 @@ import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunction
 export const StartVideoCallPage = (props) => {
   return (
     <CallEnded>
-      <Container>
-        <Row>
-          <h2>Call has ended</h2>
-          <p>Thank you for using our services.</p>
-        </Row>
+      <Container className='text-center'>
+        <h2>Call has ended</h2>
+        <br />
+        <p>Thank you for using our services.</p>
       </Container>
     </CallEnded>
   );

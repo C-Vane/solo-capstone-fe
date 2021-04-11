@@ -77,9 +77,11 @@ export const NavItem = styled.div`
 `;
 
 export const Speech = styled.div`
-  position: relative;
+  position: absolute;
   z-index: 1;
-  top: -10vmin;
+  bottom: 10vmin;
+  left: 0;
+  right: 0;
   color: #fff;
   background-color: #000;
   margin: auto;
