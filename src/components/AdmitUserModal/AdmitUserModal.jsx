@@ -12,13 +12,12 @@ function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
           <IconButton aria-label='close' className='float-right' onClick={close}>
             <CloseIcon />
           </IconButton>
-          <div className='p-md-4 ps-1'>
-            <Logo />
-            <div className='mb-4 p-md-3 py-3'>
-              <h3 className='mb-3'>Users Requesting admition</h3>
+          <div className=' ps-1'>
+            <div className='mb-1 p-md-3 py-3 d-flex flex-column'>
+              <h5 className='mb-1'>Users Requesting Admition</h5>
 
               {waitingList.map((user, index) => (
-                <div key={index} className='d-flex'>
+                <div key={index} className='d-flex m-auto'>
                   <Avatar alt={user.firstname} src={user.img}></Avatar>
                   <span>
                     {user.firstname} {user.lastname}
@@ -32,9 +31,6 @@ function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
                 </div>
               ))}
             </div>
-            <Button variant='outline-dark' className='m-auto w-md-50 w-75 mr-3 ml-3 rounded-0' onClick={close}>
-              CLOSE
-            </Button>
           </div>
         </Paper>
       </ContainerAdmitModal>

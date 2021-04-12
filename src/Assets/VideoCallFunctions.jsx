@@ -8,8 +8,6 @@ export const CreatePeer = (userToSignal, caller, stream, socket) => {
     stream,
   });
   peer.user = userToSignal;
-  console.log("Create new peer", peer.user);
-
   peer.on("signal", (signal) => {
     console.log("sending-signal");
     socket.emit("sending-signal", { userToSignal, caller, signal });
@@ -82,5 +80,5 @@ export const mapDispatchToProps = (dispatch) => ({
   setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
   setRoom: (room) => dispatch({ type: "SET_ROOM", payload: room }),
   setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
-  showErrors: (boolean) => dispatch({ type: "DISPLAY_ERRORS", payload: boolean }),
+  setLoading: (loading) => dispatch({ type: "SET_LOADING", payload: loading }),
 });

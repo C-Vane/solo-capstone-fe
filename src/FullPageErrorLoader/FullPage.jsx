@@ -1,17 +1,40 @@
 import React, { useEffect, useState } from "react";
-import "./style.scss";
+import "./style.css";
 import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
-import { Logo } from "../Assets/Assets";
+import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
+import { Logo } from "../Assets/StyledComponents";
+import { connect } from "react-redux";
 
 const FullPage = (props) => {
   const [errorText, setErrorText] = useState([]);
-  const [error, setError] = useState(props.error);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [className, setClassName] = useState("full-page p-2 p-md-5 ");
+  const [classNameLoading, setClassNameLoading] = useState("LoadingAnimated");
+  const [classNameShape, setClassNameShape] = useState("shape");
 
   useEffect(() => {
-    console.log(props);
-    if (error) {
-      switch (error) {
+    const cleanup = props.error && props.loading && !props.loading.active && !props.error.active;
+    setTimeout(
+      () => {
+        if (cleanup) {
+          setTimeout(() => {
+            setClassName("LoadingPage");
+          }, 2000);
+          setTimeout(() => {
+            setClassNameLoading("scale-out-center");
+            setClassNameShape("scale-out-center");
+          }, 1500);
+        }
+        props.error && setError(props.error.active);
+        props.loading && setLoading(props.loading.active);
+      },
+      cleanup ? [2005] : [100]
+    );
+
+    if (props.error || props.loading) {
+      switch (props.errors.code) {
         case 404:
           setErrorText(["404", "OOPS! Looks like this page went on vacation", "https://innovationmanagement.se/wp-content/uploads/2015/07/sensing-exploring-uncharted-territory.png"]);
           break;
@@ -39,31 +62,40 @@ const FullPage = (props) => {
           break;
       }
     }
-  }, [props]);
-  return (
-    <div className='full-page p-2 p-md-5 ' style={errorText && { backgroundImage: `url("${errorText[2]}")`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center" }}>
-      {!error ? (
-        <div className='loader-page'>
-          <Logo />
-        </div>
-      ) : (
-        <div className='errors w-75 m-auto'>
-          <Logo />
-          <div className={`mt-5 d-flex flex-column text-center ${errorText[3]}`}>
-            <h1 className='m-5 error-code'>{errorText[0]}</h1>
+    return () => {};
+  }, [props.loading, props.errors]);
 
-            <h4 className='error-text mb-4'>{errorText[1]}</h4>
-
-            <Link to='/'>
-              <Button variant={errorText[3] ? "contained" : "outlined"} size='large' className='font-bolder' color={errorText[3] ? "contained" : "primary"}>
-                Take me home
-              </Button>
-            </Link>
+  if (loading || error)
+    return (
+      <div className={className} style={errorText && { backgroundImage: `url("${errorText[2]}")`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center" }}>
+        {!error ? (
+          <div className='loader-page'>
+            <div className='d-flex flex-column align-items-center'>
+              <Logo />
+              <div className={classNameLoading}>
+                <span className={classNameShape}></span>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        ) : (
+          <div className='errors w-75 m-auto'>
+            <Logo />
+            <div className={`mt-5 d-flex flex-column text-center ${errorText[3]}`}>
+              <h1 className='m-5 error-code'>{errorText[0]}</h1>
+
+              <h4 className='error-text mb-4'>{errorText[1]}</h4>
+
+              <Link to='/'>
+                <Button variant={errorText[3] ? "contained" : "outlined"} size='large' className='font-bolder' color={errorText[3] ? "contained" : "primary"}>
+                  Take me home
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  else return <div></div>;
 };
 
-export default FullPage;
+export default connect(mapStateToProps, mapDispatchToProps)(FullPage);

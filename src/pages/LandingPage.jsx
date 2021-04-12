@@ -109,5 +109,6 @@ const MainContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin-top: 8vh;
 `;
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

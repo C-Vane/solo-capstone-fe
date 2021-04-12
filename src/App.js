@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import NavBar from "./components/Navbar/NavBar";
+import FullPage from "./FullPageErrorLoader/FullPage";
 import Protected from "./functions/Protected";
 import CallEndPage from "./pages/CallEndPage";
 import CallPage from "./pages/CallPage";
@@ -18,7 +19,9 @@ const routes = [
 function App() {
   return (
     <Router>
+      <FullPage />
       <Route component={NavBar} />
+
       <Switch>
         {routes.map((route, key) => (
           <Route

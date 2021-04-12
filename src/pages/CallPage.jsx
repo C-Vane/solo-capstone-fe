@@ -24,7 +24,7 @@ import Slide from "@material-ui/core/Slide";
 
 const videoConstraints = {
   height: window.innerHeight / 2,
-  width: window.innerWidth / 2,
+  width: window.innerHeight / 2,
 };
 
 export const CallPage = (props) => {
@@ -83,10 +83,7 @@ export const CallPage = (props) => {
 
   useEffect(() => {
     setCurrentUser(`${user.firstname} ${user.lastname}`);
-    console.log(setOptions);
     if (!user._id || !props.room.admin) {
-      console.log("blocked by user");
-
       if (props.user._id) {
         setUser(props.user);
         return;
@@ -102,12 +99,11 @@ export const CallPage = (props) => {
     props.room.admin && user && props.room.admin.user == user._id && setAdmin(true);
     props.room._id && setWaitingList(props.room.waitingList);
 
-    console.log(waitingList);
-
     if (setOptions) {
-      console.log("blocked by options");
       return;
     }
+
+    props.setLoading({ active: true });
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: videoConstraints }).then((stream) => {
       userStream.current = stream;
@@ -117,9 +113,7 @@ export const CallPage = (props) => {
 
       socketRef.current.emit("join-room", roomID, user);
 
-      socketRef.current.on("user-connected", (payload) => {
-        console.log("User connected", payload);
-      });
+      socketRef.current.on("user-connected", (payload) => {});
 
       socketRef.current.on("error", (payload) => {
         console.log(payload);
@@ -127,7 +121,7 @@ export const CallPage = (props) => {
 
       socketRef.current.on("all-users", (users) => {
         const peers = [];
-        console.log("Important", users);
+
         users.forEach((newPeer) => {
           if (newPeer.socketId) {
             const peer = CreatePeer(newPeer, { ...user, socketId: socketRef.current.id }, userStream.current, socketRef.current);
@@ -140,10 +134,13 @@ export const CallPage = (props) => {
         });
         setPeers(peers);
         mainVideo.current.srcObject = userStream.current;
+        setTimeout(() => {
+          props.setLoading({ active: false });
+        }, 1500);
       });
 
       socketRef.current.on("user-joined", (payload) => {
-        console.log("New User Connected", payload);
+        setSnackBar([true, "top", "success", `${payload.user.firstname} ${payload.user.lastname} joined the room!`]);
         const peer = AddPeer(payload.signal, payload.callerID, userStream.current, socketRef.current);
         peersRef.current.push({
           peer,
@@ -160,14 +157,24 @@ export const CallPage = (props) => {
       socketRef.current.on("text", (payload) => {
         const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
         if (index !== -1) {
-          console.log(index);
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], text: payload.subtitles }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
         }
       });
 
       socketRef.current.on("user-disconnected", (socketId) => {
-        console.log(peersRef.current);
+        console.log(peersRef.current, socketId);
+        const index = peersRef.current.findIndex((peer) => peer.user.socketId === socketId);
+
+        if (index !== -1) {
+          setSnackBar([true, "top", "warning", `${peersRef.current[index].user.firstname} ${peersRef.current[index].user.lastname} diconnected!`]);
+          const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index + 1)];
+          peersRef.current = [...peers];
+          setPeers((peer) => [...peer.splice(0, index), ...peer.splice(index + 1)]);
+        }
+      });
+      socketRef.current.on("user-left", (socketId) => {
+        console.log(peersRef.current, peers, socketId);
         const index = peersRef.current.findIndex((peer) => peer.user.socketId === socketId);
         if (index !== -1) {
           setSnackBar([true, "top", "info", `${peersRef.current[index].user.firstname} left the room!`]);
@@ -179,21 +186,17 @@ export const CallPage = (props) => {
 
       socketRef.current.on("message", (payload) => {
         setMessages((m) => [...m, payload]);
-        console.log(payload);
-        payload.user._id !== user._id && setUnreadMessages((num) => num + 1);
+        payload.user.socketId !== user.socketId && setUnreadMessages((num) => num + 1);
       });
 
       socketRef.current.on("user-requested", (payload) => {
-        console.log("user requested", payload);
         setWaitingList(payload);
-        setAdmit(true);
+        setSnackBar([true, "top", "success", `Admit ${payload[payload.length - 1].firstname} ${payload[payload.length - 1].lastname} to Room?`, () => admitUser(payload[payload.length - 1])]);
       });
       socketRef.current.on("mute", () => {
-        console.log("muting");
         MuteUnmuteAudio(false);
       });
       socketRef.current.on("call-end", () => {
-        console.log("call ended");
         window.location.replace("/callEnded");
       });
     });
@@ -202,6 +205,7 @@ export const CallPage = (props) => {
       userStream.current.getTracks().forEach(function (track) {
         track.stop();
       });
+      socketRef.current.disconnect();
     };
   }, [user, props.room, setOptions]);
 
@@ -226,6 +230,7 @@ export const CallPage = (props) => {
   };
 
   const LeaveRoom = () => {
+    console.log(roomID, user._id);
     socketRef.current.emit("end-call", { roomId: roomID, userId: user._id });
     window.location.replace("/callEnded");
   };
@@ -251,7 +256,7 @@ export const CallPage = (props) => {
   };
 
   const LeaveHandler = () => {
-    setSnackBar([true, "bottom", "warning", "Are you sure you want to Leave the Call?", LeaveRoom]);
+    setSnackBar([true, "bottom", "warning", `Are you sure you want to ${admin ? "end" : "leave"} the Call?`, LeaveRoom]);
   };
   const updateUser = (data) => {
     props.setUser(data);

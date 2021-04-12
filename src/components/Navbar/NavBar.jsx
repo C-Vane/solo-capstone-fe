@@ -17,6 +17,7 @@ export const NavBar = (props) => {
   const logOut = async () => {
     const { ok } = await postFunction("users/logOut");
     if (ok) {
+      props.setLoading({ active: true });
       window.location.replace("/");
     }
   };
@@ -25,6 +26,9 @@ export const NavBar = (props) => {
     if (loggedInUser && loggedInUser._id) {
       setUser(loggedInUser);
     }
+    setTimeout(() => {
+      props.setLoading({ active: false });
+    }, 1500);
   };
 
   useEffect(() => {

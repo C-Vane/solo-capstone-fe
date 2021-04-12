@@ -27,11 +27,10 @@ const VideoOther = (props) => {
   const changeStream = () => {
     const { stream, newUser, muted } = setMain(ref.current.srcObject, user);
     ref.current.srcObject = stream;
-    console.log(newUser);
     setUser(newUser);
     setMuted(muted);
   };
-  console.log(props);
+
   return (
     <Col sm={size} xs={size === 6 ? 12 : size} onClick={() => setMain && changeStream} className='mt-3'>
       {admin && (
