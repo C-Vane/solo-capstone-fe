@@ -1,5 +1,5 @@
 import { Avatar, Menu, MenuItem, Paper } from "@material-ui/core";
-import { Home, VideocamOutlined } from "@material-ui/icons";
+import { AccountCircleOutlined, ExitToAppOutlined, Home, VideocamOutlined } from "@material-ui/icons";
 import React, { useState, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import { connect } from "react-redux";
@@ -61,15 +61,20 @@ export const NavBar = (props) => {
           )}
           {user._id ? (
             <div>
-              <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
-              <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)}>
+              <Avatar alt={user.firstName} className={{ objectFit: "cover" }} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2 '></Avatar>
+              <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)} onClick={() => setMenu(null)}>
                 <MenuItem>
+                  <AccountCircleOutlined className='mr-2' />
                   <Link to='/account'>My account</Link>
                 </MenuItem>
-                <MenuItem>
+                {/*<MenuItem>
+                <Settings/>
                   <Link to='/settings'>Settings</Link>
+                </MenuItem>*/}
+                <MenuItem onClick={logOut}>
+                  <ExitToAppOutlined className='mr-2' />
+                  Logout
                 </MenuItem>
-                <MenuItem onClick={logOut}>Logout</MenuItem>
               </Menu>
             </div>
           ) : (

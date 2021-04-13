@@ -36,7 +36,7 @@ const VideoOther = (props) => {
       {admin && (
         <OtherOptions>
           <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
-          <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)}>
+          <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)} onClick={() => setMenu(null)}>
             <MenuItem onClick={() => kickOut(user.socketId)}>Kick out</MenuItem>
             <MenuItem onClick={() => muteUsers(user.socketId)}>Mute</MenuItem>
           </Menu>

@@ -164,9 +164,25 @@ export const ContainerOtherVideo = styled.div`
 `;
 export const ContainerMain = styled(Container)`
   max-height: 100vh;
+  margin-bottom: 1rem;
 `;
 export const DivHalf = styled.div`
   min-width: 40%;
   display: flex;
   flex-shrink: 0;
+`;
+export const Description = styled.div`
+  margin-bottom: 15vmin;
+  h1 {
+    margin-bottom: 5vmin;
+  }
+  p {
+  }
+`;
+export const MainContainer = styled(Container)`
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin-top: 8vh;
 `;

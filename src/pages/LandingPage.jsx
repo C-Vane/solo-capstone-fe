@@ -1,7 +1,7 @@
 import { Grid, Input } from "@material-ui/core";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { SIGN_IN } from "../Assets/StyledComponents";
+import { Description, MainContainer, SIGN_IN } from "../Assets/StyledComponents";
 import styled from "styled-components";
 import GetStarted from "../components/GetStarted/GetStarted";
 import { Button, Container } from "react-bootstrap";
@@ -97,19 +97,4 @@ export const LandingPage = ({ user, history }) => {
   );
 };
 
-const Description = styled.div`
-  margin-bottom: 15vmin;
-  h1 {
-    margin-bottom: 5vmin;
-  }
-  p {
-  }
-`;
-const MainContainer = styled(Container)`
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin-top: 8vh;
-`;
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

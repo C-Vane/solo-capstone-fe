@@ -153,7 +153,7 @@ function Controls({
           horizontal: "right",
         }}
         open={snackbar[0]}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         onClose={() => setSnackBar([])}
       >
         <Alert severity={snackbar[2]} onClose={() => setSnackBar([])}>

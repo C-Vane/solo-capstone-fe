@@ -6,13 +6,13 @@ import Protected from "./functions/Protected";
 import CallEndPage from "./pages/CallEndPage";
 import CallPage from "./pages/CallPage";
 import LandingPage from "./pages/LandingPage";
-import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
 import StartVideoCallPage from "./pages/StartVideoCallPage";
 
 const routes = [
   { path: "/", component: LandingPage },
   { path: "/startCall", component: StartVideoCallPage, isProtected: true },
-  { path: "/settings", component: SettingsPage, isProtected: true },
+  { path: "/account", component: ProfilePage, isProtected: true },
   { path: "/video/:id", component: CallPage },
   { path: "/callEnded", component: CallEndPage },
 ];

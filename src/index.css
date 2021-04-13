@@ -1,9 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300;700&display=swap");
+
 body {
   background-color: #daded4;
   z-index: -1;
 }
 #simple-menu div.MuiPaper-root {
-  top: 15vmin !important;
+  top: 10vh !important;
 }
 
 #simple-menu li,

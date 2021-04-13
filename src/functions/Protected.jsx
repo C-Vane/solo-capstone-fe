@@ -6,10 +6,10 @@ const Protected = (props) => {
   const getUser = async () => {
     const user = await getFunction("users/me");
     if (!user) {
-      // window.location.replace("/");
+      window.location.replace("/");
       return;
     }
-    if (user._id) setUser(user);
+    if (user && user._id) setUser(user);
   };
   useEffect(() => {
     getUser();
