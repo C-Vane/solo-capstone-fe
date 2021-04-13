@@ -23,8 +23,8 @@ import { Grow } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 
 const videoConstraints = {
-  height: window.innerHeight / 2,
-  width: window.innerHeight / 2,
+  height: window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerWidth / 2,
+  width: window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerWidth / 2,
 };
 
 export const CallPage = (props) => {
@@ -91,7 +91,8 @@ export const CallPage = (props) => {
 
       const savedUser = JSON.parse(window.localStorage.getItem("user"));
       if (savedUser && savedUser._id) {
-        setUser(savedUser) && props.setUser(savedUser);
+        setUser(savedUser);
+        props.setUser(savedUser);
         return;
       }
       return;
@@ -163,7 +164,6 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("user-disconnected", (socketId) => {
-        console.log(peersRef.current, socketId);
         const index = peersRef.current.findIndex((peer) => peer.user.socketId === socketId);
 
         if (index !== -1) {
@@ -174,8 +174,7 @@ export const CallPage = (props) => {
         }
       });
       socketRef.current.on("user-left", (socketId) => {
-        console.log(peersRef.current, peers, socketId);
-        const index = peersRef.current.findIndex((peer) => peer.user.socketId === socketId);
+        const index = peersRef.current.findIndex((peer) => peer.user && peer.user.socketId === socketId);
         if (index !== -1) {
           setSnackBar([true, "top", "info", `${peersRef.current[index].user.firstname} left the room!`]);
           const peers = [...peersRef.current.splice(0, index), peersRef.current.splice(index + 1)];
@@ -186,7 +185,7 @@ export const CallPage = (props) => {
 
       socketRef.current.on("message", (payload) => {
         setMessages((m) => [...m, payload]);
-        payload.user.socketId !== user.socketId && setUnreadMessages((num) => num + 1);
+        payload.user._id !== user._id && setUnreadMessages((num) => num + 1);
       });
 
       socketRef.current.on("user-requested", (payload) => {
@@ -197,6 +196,7 @@ export const CallPage = (props) => {
         MuteUnmuteAudio(false);
       });
       socketRef.current.on("call-end", () => {
+        props.setLoading({ active: true });
         window.location.replace("/callEnded");
       });
     });
@@ -210,7 +210,6 @@ export const CallPage = (props) => {
   }, [user, props.room, setOptions]);
 
   const admitUser = (payload) => {
-    console.log(payload);
     socketRef.current.emit("admit-user", { roomId: roomID, adminId: userID, user: payload });
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
   };
@@ -221,16 +220,15 @@ export const CallPage = (props) => {
   };
   const setMain = (stream, newUser) => {
     const oldStream = mainVideo.current.srcObject;
-    const oldUser = currentUser;
+    const oldUser = user;
     mainVideo.current.srcObject = stream;
-    setCurrentUser(newUser);
+    setCurrentUser(`${newUser.firstname} ${newUser.lastname}`);
     newUser._id === user._id ? setMuted(true) : setMuted(false);
 
     return { stream: oldStream, newUser: oldUser, muted: !muted };
   };
 
   const LeaveRoom = () => {
-    console.log(roomID, user._id);
     socketRef.current.emit("end-call", { roomId: roomID, userId: user._id });
     window.location.replace("/callEnded");
   };
@@ -294,12 +292,14 @@ export const CallPage = (props) => {
           </Row>
 
           {peers.length > 3 && (
-            <Scrollbars style={{ width: "100%", maxHeight: "20vh" }}>
-              <ContainerOtherVideo>
-                {peers.map((peer, index) => (
-                  <VideoOther key={index} peer={peer} setMain={setMain} size={3} muteUsers={MuteUsers} kickOut={KickOut} />
-                ))}
-              </ContainerOtherVideo>
+            <Scrollbars style={{ width: "100%", minHeight: "23vh" }}>
+              <div style={{ width: "100%", minHeight: "23vh" }}>
+                <ContainerOtherVideo>
+                  {peers.map((peer, index) => (
+                    <VideoOther key={index} peer={peer} setMain={setMain} size={3} muteUsers={MuteUsers} kickOut={KickOut} />
+                  ))}
+                </ContainerOtherVideo>
+              </div>
             </Scrollbars>
           )}
           <Controls
@@ -322,6 +322,7 @@ export const CallPage = (props) => {
             admit={setAdmit}
             waitingList={waitingList.length}
             chat={props.room.chat}
+            privateRoom={props.room.private}
             socket={socketRef}
             messages={messages}
             setUnreadMessages={setUnreadMessages}

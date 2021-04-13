@@ -48,6 +48,7 @@ export const LandingPage = ({ user, history }) => {
 
             {user._id ? (
               <div>
+                <h5>Quick Start</h5>
                 <Button variant='outline-dark' className='m-3 rounded-0' onClick={createRoom}>
                   New Call
                 </Button>

@@ -10,7 +10,7 @@ const VideoOther = (props) => {
   const ref = useRef();
   const [user, setUser] = useState({});
   const [admin, setAdmin] = useState(false);
-  const [video, setVideo] = useState(true);
+  const [video, setVideo] = useState(false);
   const [muted, setMuted] = useState(false);
   const [menu, setMenu] = useState(null);
   useEffect(() => {
@@ -32,7 +32,7 @@ const VideoOther = (props) => {
   };
 
   return (
-    <Col sm={size} xs={size === 6 ? 12 : size} onClick={() => setMain && changeStream} className='mt-3'>
+    <Col sm={size} xs={size === 6 ? 12 : size} onClick={() => setMain && changeStream()} className='mt-3'>
       {admin && (
         <OtherOptions>
           <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
@@ -50,7 +50,11 @@ const VideoOther = (props) => {
       <Video playsInline autoPlay ref={ref} muted={muted} />
       {!video && <VideoImage src={user.img} />}
       {size === 6 && <div className='m-auto'>{peer.text && <Speech>{peer.text}</Speech>}</div>}
-      {size === 3 && <Name>{user.firstname && user.lastname}</Name>}
+      {size === 3 && (
+        <Name>
+          {user.firstname} {user.lastname}
+        </Name>
+      )}
     </Col>
   );
 };

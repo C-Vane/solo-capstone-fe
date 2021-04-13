@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Checkbox, IconButton, Paper, Badge, Fade, Menu, MenuItem, Snackbar, Grow } from "@material-ui/core";
+import { Checkbox, IconButton, Paper, Badge, Fade, Menu, MenuItem, Snackbar, Grow, Chip } from "@material-ui/core";
 import { Forum, Mic, MicOffOutlined, PeopleOutlined, Settings, SpeakerNotes, SpeakerNotesOffOutlined, ThumbsUpDown, ThumbsUpDownOutlined, Videocam, VideocamOffOutlined } from "@material-ui/icons";
 import { popoverAudio, popoverSign, popoverSpeech, popoverVideo } from "../../Assets/PopOvers";
 import { Button } from "react-bootstrap";
@@ -33,6 +33,7 @@ function Controls({
   messages,
   chat,
   socket,
+  privateRoom,
 }) {
   const [settings, setSettings] = useState(null);
   const [chatRoom, setChatRoom] = useState(null);
@@ -97,6 +98,7 @@ function Controls({
               }}
             />
           </OverlayTrigger>
+          <Chip label={privateRoom ? "Private" : "Public"} className='mt-3 ml-2' size='small' variant='outlined' />
         </DivHalf>
         <DivHalf>
           {chat && (
