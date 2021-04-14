@@ -70,11 +70,12 @@ export const CallSettings = ({ room, setRoom, anchor, setLanguage, setAnchor, ad
         )}
         <Autocomplete
           id='combo-box-demo'
+          size='small'
           options={languageList}
           getOptionLabel={(option) => option}
-          style={{ width: 300 }}
           renderInput={(params) => <TextField {...params} label='Language' variant='outlined' />}
           onChange={(e) => ChangeLanguage(e.target.innerText)}
+          className='mx-2'
         />
       </List>
     </Popover>

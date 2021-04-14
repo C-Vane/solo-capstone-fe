@@ -55,11 +55,11 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
           <IconButton aria-label='close' className='float-right' onClick={Close}>
             <CloseIcon />
           </IconButton>
-          <div className='p-md-4 ps-1'>
+          <div className='p-sm-2 p-md-4 ps-1'>
             <Logo />
 
             <div className='mb-4 p-md-3 py-3'>
-              <form onSubmit={joinCall} className='d-flex flex-column p-md-4 p-2 mt-3'>
+              <form onSubmit={joinCall} className='d-flex flex-column p-md-4 p-2 mt-2'>
                 {user && (
                   <>
                     <TextField className='m-3' autoComplete='given-name' value={name} onChange={(e) => setName(e.target.value)} label='Your name' type='text' required />
@@ -137,7 +137,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                     />
                   </Grow>
                 </div>
-                <div className='my-4'>
+                <div className='my-2'>
                   <Button variant='outline-dark' className='m-auto w-md-50 w-75 rounded-0' type='submit'>
                     JOIN CALL
                   </Button>

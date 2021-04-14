@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import io, { Socket } from "socket.io-client";
 
-import { Video, NameBig, ContainerOtherVideo, VideoImage, ContainerMain, DivHalf } from "../Assets/StyledComponents";
+import { Video, NameBig, ContainerOtherVideo, VideoImage, ContainerMain, Canvas } from "../Assets/StyledComponents";
 
 import NameModal from "../components/NameModal/NameModal";
 
@@ -16,15 +16,20 @@ import VideoOther from "../components/VideoOther/VideoOther";
 
 import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
 
-import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps } from "../Assets/VideoCallFunctions";
+import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps, loadBodyPix } from "../Assets/VideoCallFunctions";
+
 import Scrollbars from "react-custom-scrollbars";
+
 import Controls from "../components/Controls/Controls";
+
 import { Grow } from "@material-ui/core";
+
 import Slide from "@material-ui/core/Slide";
+import Reaction from "../components/Reaction/Reaction";
 
 const videoConstraints = {
-  height: window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerWidth / 2,
-  width: window.innerHeight > window.innerWidth ? window.innerHeight / 2 : window.innerWidth / 2,
+  height: window.innerWidth,
+  width: window.innerHeight,
 };
 
 export const CallPage = (props) => {
@@ -35,6 +40,8 @@ export const CallPage = (props) => {
   const userStream = useRef();
 
   const peersRef = useRef([]);
+
+  const canvas = useRef();
 
   const roomID = props.match.params.id;
 
@@ -74,6 +81,10 @@ export const CallPage = (props) => {
 
   const [messages, setMessages] = useState([]);
 
+  const [blurBackground, setBlurBackground] = useState(false);
+
+  const [reaction, setReaction] = useState(null);
+
   useEffect(() => {
     GetRoom(roomID, props.setRoom);
     setUser(props.user);
@@ -108,6 +119,7 @@ export const CallPage = (props) => {
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: videoConstraints }).then((stream) => {
       userStream.current = stream;
+
       MuteUnmuteAudio(audio);
       VideoOnAndOff(video);
       socketRef.current = io.connect(process.env.REACT_APP_URL);
@@ -159,6 +171,28 @@ export const CallPage = (props) => {
         const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], text: payload.subtitles }, ...peersRef.current.slice(index + 1)];
+          setPeers(updated);
+        }
+      });
+
+      socketRef.current.on("reaction", (payload) => {
+        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
+        if (index !== -1) {
+          const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], reaction: payload.reaction }, ...peersRef.current.slice(index + 1)];
+          setPeers(updated);
+
+          setTimeout(() => {
+            const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], reaction: null }, ...peersRef.current.slice(index + 1)];
+            setPeers(updated);
+          }, 6000);
+        }
+      });
+
+      socketRef.current.on("set-video-background", (payload) => {
+        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
+        console.log(payload);
+        if (index !== -1) {
+          const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], blur: payload.blur }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
         }
       });
@@ -260,6 +294,23 @@ export const CallPage = (props) => {
     props.setUser(data);
     setUser(data);
   };
+
+  const handleBackgroundBlur = (e) => {
+    setBlurBackground(e.target.checked);
+    socketRef.current.emit("video-background", { roomId: roomID, user, blur: e.target.checked });
+    if (e.target.checked) {
+      loadBodyPix(mainVideo, canvas, e.target.checked);
+    }
+  };
+
+  const handleReaction = (num) => {
+    setReaction(num);
+    socketRef.current.emit("send-reaction", { roomId: roomID, user, reaction: num });
+    setTimeout(() => {
+      setReaction(null);
+    }, 6000);
+  };
+
   return (
     <ContainerMain>
       <Grow in={setOptions} mountOnEnter unmountOnExit disableStrictModeCompat={true} timeOut={1000}>
@@ -281,10 +332,13 @@ export const CallPage = (props) => {
               <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} close={() => setAdmit(false)} />
             </div>
           </Slide>
+
           <Row>
             <Col sm={peers.length > 3 || peers.length === 0 ? 12 : 6} className='mt-3'>
               <NameBig>{currentUser}</NameBig>
+              {reaction !== null && <Reaction num={reaction} />}
               <Video autoPlay ref={mainVideo} poster={user.img} muted={muted}></Video>
+              <Canvas ref={canvas} className={blurBackground ? "" : "d-none"}></Canvas>
               {!video && <VideoImage src={user.img} />}
               <SpeechRecognition audio={speech && audio} lang={language} socket={socketRef} user={user} roomId={roomID} />
             </Col>
@@ -327,6 +381,9 @@ export const CallPage = (props) => {
             messages={messages}
             setUnreadMessages={setUnreadMessages}
             unreadMessages={unreadMessages}
+            background={blurBackground}
+            setBackground={handleBackgroundBlur}
+            setReaction={handleReaction}
           />
         </>
       )}

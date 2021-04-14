@@ -1,5 +1,8 @@
 import Peer from "simple-peer";
 import { getFunction } from "../functions/CRUDFunctions";
+import * as tf from "@tensorflow/tfjs";
+
+import * as bodyPix from "@tensorflow-models/body-pix";
 
 export const CreatePeer = (userToSignal, caller, stream, socket) => {
   const peer = new Peer({
@@ -82,3 +85,32 @@ export const mapDispatchToProps = (dispatch) => ({
   setError: (error) => dispatch({ type: "SET_ERROR", payload: error }),
   setLoading: (loading) => dispatch({ type: "SET_LOADING", payload: loading }),
 });
+
+export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
+  console.log("blur", blurBackground);
+  const options = {
+    multiplier: 0.75,
+    stride: 32,
+    quantBytes: 4,
+  };
+  const width = mainVideo.current.videoWidth;
+  const height = mainVideo.current.videoHeight;
+  canvas.current.width = width;
+  canvas.current.height = height;
+  mainVideo.current.width = width;
+  mainVideo.current.height = height;
+  bodyPix
+    .load(options)
+    .then((net) => perform(net, mainVideo.current, canvas, mainVideo, blurBackground))
+    .catch((err) => console.log(err));
+};
+
+const perform = async (net, video, canvas, mainVideo, blurBackground) => {
+  while (blurBackground) {
+    const segmentation = await net.segmentPerson(video);
+    const backgroundBlurAmount = 10;
+    const edgeBlurAmount = 15;
+    const flipHorizontal = true;
+    bodyPix.drawBokehEffect(canvas.current, mainVideo.current, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);
+  }
+};

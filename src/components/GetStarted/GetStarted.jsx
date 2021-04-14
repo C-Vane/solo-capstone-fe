@@ -38,7 +38,7 @@ const GetStarted = (props) => {
               )}
             </div>
             <small className='text-muted text-smaller px-4'>
-              Click “{welcome ? "Sign In" : "Sign Up"}” to agree to ToSign’s Terms of Service and acknowledge that ToSign’s Privacy Policy applies to you.
+              Click “{welcome ? "Sign In" : "Sign Up"}” to agree to Signdacity's Terms of Service and acknowledge that Signdacity’s Privacy Policy applies to you.
             </small>
           </div>
         </Paper>

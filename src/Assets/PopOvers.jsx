@@ -33,3 +33,11 @@ export const popoverSign = (
     </Popover.Content>
   </Popover>
 );
+export const popoverBackground = (
+  <Popover className='z4'>
+    <Popover.Title as='h3'>Blur BackGround</Popover.Title>
+    <Popover.Content>
+      And here's some <strong>amazing</strong> content. It's very engaging. right?
+    </Popover.Content>
+  </Popover>
+);

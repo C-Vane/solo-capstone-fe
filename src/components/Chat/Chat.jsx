@@ -56,7 +56,16 @@ function Chat({ anchor, setAnchor, socket, user, room, messages }) {
         </Scrollbars>
         <Divider component='li' />
 
-        <TextField className='m-auto w-100 mt-1' variant='outlined' label='Write message...' value={text} onChange={(e) => setText(e.target.value)} onKeyDown={handleSend} />
+        <TextField
+          className='m-auto w-100 mt-1'
+          size='small'
+          className='mx-2'
+          variant='outlined'
+          label='Write message...'
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleSend}
+        />
       </List>
     </Popover>
   );

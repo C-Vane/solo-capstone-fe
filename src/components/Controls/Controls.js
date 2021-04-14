@@ -1,13 +1,29 @@
 import React, { useState } from "react";
 import { Checkbox, IconButton, Paper, Badge, Fade, Menu, MenuItem, Snackbar, Grow, Chip } from "@material-ui/core";
-import { Forum, Mic, MicOffOutlined, PeopleOutlined, Settings, SpeakerNotes, SpeakerNotesOffOutlined, ThumbsUpDown, ThumbsUpDownOutlined, Videocam, VideocamOffOutlined } from "@material-ui/icons";
-import { popoverAudio, popoverSign, popoverSpeech, popoverVideo } from "../../Assets/PopOvers";
+import {
+  BlurOffRounded,
+  BlurOnRounded,
+  Forum,
+  Mic,
+  MicOffOutlined,
+  PeopleOutlined,
+  Settings,
+  SpeakerNotes,
+  SpeakerNotesOffOutlined,
+  ThumbsUpDown,
+  ThumbsUpDownOutlined,
+  ThumbUp,
+  Videocam,
+  VideocamOffOutlined,
+} from "@material-ui/icons";
+import { popoverAudio, popoverSign, popoverSpeech, popoverVideo, popoverBackground } from "../../Assets/PopOvers";
 import { Button } from "react-bootstrap";
 import { Alert } from "@material-ui/lab";
 import { OverlayTrigger } from "react-bootstrap";
 import { DivHalf } from "../../Assets/StyledComponents";
 import Chat from "../Chat/Chat";
 import CallSettings from "../CallSettings/CallSettings";
+import ReactionChoice from "../Reaction/ReactionChoice";
 
 function Controls({
   admin,
@@ -34,13 +50,17 @@ function Controls({
   chat,
   socket,
   privateRoom,
+  background,
+  setBackground,
+  setReaction,
 }) {
   const [settings, setSettings] = useState(null);
   const [chatRoom, setChatRoom] = useState(null);
+  const [reactionTab, setReactionTab] = useState(null);
 
   return (
     <div>
-      <Paper elevation={1} className='d-flex justify-content-between p-2 flex-wrap'>
+      <Paper elevation={1} className='d-flex justify-content-around p-2 flex-wrap'>
         <DivHalf>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverVideo}>
             <Checkbox
@@ -98,6 +118,9 @@ function Controls({
               }}
             />
           </OverlayTrigger>
+          <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverBackground}>
+            <Checkbox color='dark' icon={<BlurOffRounded />} checkedIcon={<BlurOnRounded />} name='blurBackground' aria-label='Background blur' checked={background} onChange={setBackground} />
+          </OverlayTrigger>
           <Chip label={privateRoom ? "Private" : "Public"} className='mt-3 ml-2' size='small' variant='outlined' />
         </DivHalf>
         <DivHalf>
@@ -116,6 +139,9 @@ function Controls({
             </IconButton>
           )}
 
+          <IconButton aria-label='chat' className='m-auto' onClick={(e) => setReactionTab(e.target)}>
+            <ThumbUp />
+          </IconButton>
           <IconButton aria-label='chat' className='m-auto' onClick={(e) => setSettings(e.target)}>
             <Settings />
           </IconButton>
@@ -167,6 +193,7 @@ function Controls({
       </Snackbar>
       <Chat anchor={chatRoom} socket={socket} setAnchor={setChatRoom} setUnreadMessages={setUnreadMessages} messages={messages} />
       <CallSettings anchor={settings} setAnchor={setSettings} setLanguage={setLanguage} admin={admin} />
+      <ReactionChoice anchor={reactionTab} setAnchor={setReactionTab} setReaction={setReaction} />
     </div>
   );
 }

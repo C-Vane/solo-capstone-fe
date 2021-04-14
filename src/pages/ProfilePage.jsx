@@ -116,7 +116,7 @@ export const ProfilePage = ({ user, setUser }) => {
                                 variant='outlined'
                                 size='small'
                                 type='password'
-                                label='Your Old Password'
+                                label='Old Password'
                                 autoComplete='current-password'
                                 value={oldPassword}
                                 onChange={(e) => setOldPassword(e.target.value)}
@@ -126,7 +126,7 @@ export const ProfilePage = ({ user, setUser }) => {
                                 size='small'
                                 autoComplete='new-password'
                                 type='password'
-                                label='Your New Password'
+                                label=' New Password'
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                               />
