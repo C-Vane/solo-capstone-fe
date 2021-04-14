@@ -28,8 +28,8 @@ import Slide from "@material-ui/core/Slide";
 import Reaction from "../components/Reaction/Reaction";
 
 const videoConstraints = {
-  height: window.innerWidth,
-  width: window.innerHeight,
+  height: window.innerWidth * 2,
+  width: window.innerHeight * 2,
 };
 
 export const CallPage = (props) => {
