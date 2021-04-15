@@ -202,6 +202,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("user-disconnected", (socketId) => {
+        if (peersRef.current.length === 0) return;
         const index = peersRef.current.findIndex((peer) => peer.user.socketId === socketId);
 
         if (index !== -1) {
@@ -212,6 +213,7 @@ export const CallPage = (props) => {
         }
       });
       socketRef.current.on("user-left", (socketId) => {
+        if (peersRef.current.length === 0) return;
         const index = peersRef.current.findIndex((peer) => peer.user && peer.user.socketId === socketId);
         if (index !== -1) {
           setSnackBar([true, "top", "info", `${peersRef.current[index].user.firstname} left the room!`]);
