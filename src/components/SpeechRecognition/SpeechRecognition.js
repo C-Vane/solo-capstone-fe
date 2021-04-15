@@ -8,7 +8,7 @@ if (speechRecognitionTool !== undefined) {
   recognition = new speechRecognitionTool();
 }
 
-const SpeechRecognition = ({ audio, lang, socket, roomId, user }) => {
+const SpeechRecognition = ({ audio, lang, socket, roomId, user, text }) => {
   const [speech, setSpeech] = useState("");
 
   useEffect(() => {
@@ -31,7 +31,12 @@ const SpeechRecognition = ({ audio, lang, socket, roomId, user }) => {
   if (typeof speechRecognitionTool === "undefined") {
     return <Speech>No speech available</Speech>;
   }
-  return <div className='m-auto'>{speech && <Speech>{speech}</Speech>}</div>;
+  return (
+    <div className='m-auto'>
+      {speech && <Speech>{speech}</Speech>}
+      {text && <Speech>{text}</Speech>}
+    </div>
+  );
 };
 
 export default SpeechRecognition;

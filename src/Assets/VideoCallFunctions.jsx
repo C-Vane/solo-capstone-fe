@@ -3,6 +3,7 @@ import { getFunction } from "../functions/CRUDFunctions";
 import * as tf from "@tensorflow/tfjs";
 
 import * as bodyPix from "@tensorflow-models/body-pix";
+import { recognizedWords } from "./language";
 
 export const CreatePeer = (userToSignal, caller, stream, socket) => {
   const peer = new Peer({
@@ -17,6 +18,57 @@ export const CreatePeer = (userToSignal, caller, stream, socket) => {
   });
 
   return peer;
+};
+
+export const LoadSignRecognition = async (videoRef, value, setText) => {
+  try {
+    console.log("starting", value);
+    const net = await tf.loadGraphModel("https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json");
+    const interval = setInterval(() => {
+      detect(net, videoRef, setText);
+    }, 16.7);
+    const interval_text = setInterval(() => {
+      setText("");
+    }, 2000);
+    !value && clearInterval(interval) && clearInterval(interval_text);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const detect = async (net, videoRef, setText) => {
+  //make detection
+  const img = tf.browser.fromPixels(videoRef.current);
+  const resized = tf.image.resizeBilinear(img, [640, 480]);
+  const casted = resized.cast("int32");
+  const expanded = casted.expandDims(0);
+  const obj = await net.executeAsync(expanded);
+  const boxes = await obj[1].array();
+  const classes = await obj[2].array();
+  const scores = await obj[4].array();
+  const threshold = 0.9;
+  requestAnimationFrame(() => {
+    textDetection(boxes[0], classes[0], scores[0], threshold, setText);
+  });
+
+  tf.dispose(img);
+  tf.dispose(resized);
+  tf.dispose(casted);
+  tf.dispose(expanded);
+  tf.dispose(obj);
+};
+
+const textDetection = (boxes, classes, scores, threshold, setText) => {
+  let lastDetection;
+  for (let i = 0; i <= boxes.length / 10; i++) {
+    if (boxes[i] && classes[i] && scores[i] > threshold) {
+      const newDetection = recognizedWords[classes[i]]["name"];
+      if (lastDetection !== newDetection) {
+        lastDetection = newDetection;
+        setText(newDetection);
+      }
+    }
+  }
 };
 
 export const AddPeer = (incomingSignal, caller, stream, socket) => {

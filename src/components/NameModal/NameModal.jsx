@@ -17,7 +17,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
   const [videoCheck, setVideoCheck] = useState(true);
   const [audioCheck, setAudioCheck] = useState(false);
   const [speechCheck, setSpeechCheck] = useState(false);
-  const [signRecognitionCheck, setSignRecognitionCheck] = useState(true);
+  const [signRecognitionCheck, setSignRecognitionCheck] = useState(false);
   const [language, setLanguageOption] = useState("en-us");
   const languageList = Object.keys(languageOptions);
 

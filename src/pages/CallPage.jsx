@@ -16,7 +16,7 @@ import VideoOther from "../components/VideoOther/VideoOther";
 
 import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
 
-import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps, loadBodyPix } from "../Assets/VideoCallFunctions";
+import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps, loadBodyPix, LoadSignRecognition } from "../Assets/VideoCallFunctions";
 
 import Scrollbars from "react-custom-scrollbars";
 
@@ -25,7 +25,10 @@ import Controls from "../components/Controls/Controls";
 import { Grow } from "@material-ui/core";
 
 import Slide from "@material-ui/core/Slide";
+
 import Reaction from "../components/Reaction/Reaction";
+
+import * as tf from "@tensorflow/tfjs";
 
 const videoConstraints = {
   height: window.innerWidth * 2,
@@ -63,7 +66,7 @@ export const CallPage = (props) => {
 
   const [speech, setSpeech] = useState(false);
 
-  const [signRecognition, setSignRecognition] = useState(true);
+  const [signRecognition, setSignRecognition] = useState(false);
 
   const [waitingList, setWaitingList] = useState([]);
 
@@ -85,6 +88,7 @@ export const CallPage = (props) => {
 
   const [reaction, setReaction] = useState(null);
 
+  const [text, setText] = useState("");
   useEffect(() => {
     GetRoom(roomID, props.setRoom);
     setUser(props.user);
@@ -302,6 +306,14 @@ export const CallPage = (props) => {
       loadBodyPix(mainVideo, canvas, e.target.checked);
     }
   };
+  const handleSignRecognition = (e) => {
+    setSignRecognition(e);
+    LoadSignRecognition(mainVideo, e, handelRecognizedGesture);
+  };
+  const handelRecognizedGesture = (value) => {
+    setText(value);
+    socketRef.current.emit("subtitles", { roomId: roomID, subtitles: value, user });
+  };
 
   const handleReaction = (num) => {
     setReaction(num);
@@ -340,7 +352,7 @@ export const CallPage = (props) => {
               <Video autoPlay ref={mainVideo} poster={user.img} muted={muted}></Video>
               <Canvas ref={canvas} className={blurBackground ? "" : "d-none"}></Canvas>
               {!video && <VideoImage src={user.img} />}
-              <SpeechRecognition audio={speech && audio} lang={language} socket={socketRef} user={user} roomId={roomID} />
+              <SpeechRecognition audio={speech && audio} lang={language} socket={socketRef} user={user} roomId={roomID} text={text} />
             </Col>
             {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} muteUsers={MuteUsers} kickOut={KickOut} />)}
           </Row>
@@ -364,7 +376,7 @@ export const CallPage = (props) => {
             video={video}
             VideoOnAndOff={VideoOnAndOff}
             signRecognition={signRecognition}
-            setSignRecognition={setSignRecognition}
+            setSignRecognition={handleSignRecognition}
             audio={audio}
             MuteUnmuteAudio={MuteUnmuteAudio}
             speech={speech}
