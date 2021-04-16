@@ -304,9 +304,7 @@ export const CallPage = (props) => {
   const handleBackgroundBlur = (e) => {
     setBlurBackground(e.target.checked);
     socketRef.current.emit("video-background", { roomId: roomID, user, blur: e.target.checked });
-    if (e.target.checked) {
-      loadBodyPix(mainVideo, canvas, e.target.checked);
-    }
+    loadBodyPix(mainVideo, canvas, e.target.checked);
   };
   const handleSignRecognition = (e) => {
     setSignRecognition(e);

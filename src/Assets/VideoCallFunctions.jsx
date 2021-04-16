@@ -4,6 +4,7 @@ import * as tf from "@tensorflow/tfjs";
 
 import * as bodyPix from "@tensorflow-models/body-pix";
 import { recognizedWords } from "./language";
+let interval, secondInterval, intervalBlur;
 
 export const CreatePeer = (userToSignal, caller, stream, socket) => {
   const peer = new Peer({
@@ -11,6 +12,7 @@ export const CreatePeer = (userToSignal, caller, stream, socket) => {
     trickle: false,
     stream,
   });
+
   peer.user = userToSignal;
   peer.on("signal", (signal) => {
     console.log("sending-signal");
@@ -22,15 +24,18 @@ export const CreatePeer = (userToSignal, caller, stream, socket) => {
 
 export const LoadSignRecognition = async (videoRef, value, setText) => {
   try {
-    console.log("starting", value);
-    const net = await tf.loadGraphModel("https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json");
-    const interval = setInterval(() => {
-      detect(net, videoRef, setText);
-    }, 16.7);
-    const interval_text = setInterval(() => {
-      setText("");
-    }, 2000);
-    !value && clearInterval(interval) && clearInterval(interval_text);
+    interval && clearInterval(interval);
+    secondInterval && clearInterval(secondInterval);
+    if (value) {
+      const net = await tf.loadGraphModel("https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json");
+      interval = setInterval(() => {
+        detect(net, videoRef, setText);
+      }, 16.7);
+      secondInterval = setInterval(() => {
+        setText("");
+      }, 2000);
+      console.log("sign language", value);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -60,13 +65,14 @@ const detect = async (net, videoRef, setText) => {
 
 const textDetection = (boxes, classes, scores, threshold, setText) => {
   let lastDetection;
-  for (let i = 0; i <= boxes.length / 10; i++) {
+  for (let i = 0; i <= boxes.length; i++) {
     if (boxes[i] && classes[i] && scores[i] > threshold) {
       const newDetection = recognizedWords[classes[i]]["name"];
       if (lastDetection !== newDetection) {
         lastDetection = newDetection;
         setText(newDetection);
       }
+      return;
     }
   }
 };
@@ -94,26 +100,30 @@ export const GetRoom = async (id, setRoom) => {
   else window.location.replace("/");
 };
 
-export const handleMic = (mic, language, setSpeech, audio) => {
+export const handleMic = (mic, language, setSpeech, audio, rec, setRec) => {
   if (audio) {
-    mic.start();
+    !rec && mic.start();
     mic.lang = language || "en-US";
     mic.continuous = false;
     mic.interimResults = true;
 
     mic.onend = () => {
+      setRec(false);
       mic.start();
     };
   } else {
     mic.stop();
+    setRec(false);
     mic.onend = () => {
       console.log("Stopped Mic on Click");
     };
   }
+
   mic.onstart = () => {
     setTimeout(() => {
       setSpeech("");
-    }, 2000);
+    }, 1000);
+    setRec(true);
   };
 
   mic.onresult = (event) => {
@@ -125,12 +135,15 @@ export const handleMic = (mic, language, setSpeech, audio) => {
   };
   mic.onerror = (error) => {
     mic.stop();
+    setRec(false);
     return error;
   };
 };
+
 export const mapStateToProps = (state) => {
   return state;
 };
+
 export const mapDispatchToProps = (dispatch) => ({
   setUser: (user) => dispatch({ type: "SET_USER", payload: user }),
   setRoom: (room) => dispatch({ type: "SET_ROOM", payload: room }),
@@ -140,29 +153,38 @@ export const mapDispatchToProps = (dispatch) => ({
 
 export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
   console.log("blur", blurBackground);
-  const options = {
-    multiplier: 0.75,
-    stride: 32,
-    quantBytes: 4,
-  };
-  const width = mainVideo.current.videoWidth;
-  const height = mainVideo.current.videoHeight;
-  canvas.current.width = width;
-  canvas.current.height = height;
-  mainVideo.current.width = width;
-  mainVideo.current.height = height;
-  bodyPix
-    .load(options)
-    .then((net) => perform(net, mainVideo.current, canvas, mainVideo, blurBackground))
-    .catch((err) => console.log(err));
+  if (intervalBlur) {
+    clearInterval(intervalBlur);
+  }
+  if (blurBackground) {
+    const options = {
+      multiplier: 0.75,
+      stride: 32,
+      quantBytes: 4,
+    };
+    const width = mainVideo.current.videoWidth;
+    const height = mainVideo.current.videoHeight;
+    canvas.current.width = width;
+    canvas.current.height = height;
+    mainVideo.current.width = width;
+    mainVideo.current.height = height;
+    bodyPix
+      .load(options)
+      .then((net) => perform(net, mainVideo.current, canvas, mainVideo, blurBackground))
+      .catch((err) => console.log(err));
+  }
 };
 
 const perform = async (net, video, canvas, mainVideo, blurBackground) => {
-  while (blurBackground) {
-    const segmentation = await net.segmentPerson(video);
-    const backgroundBlurAmount = 10;
-    const edgeBlurAmount = 15;
-    const flipHorizontal = true;
-    bodyPix.drawBokehEffect(canvas.current, mainVideo.current, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);
-  }
+  intervalBlur =
+    blurBackground &&
+    setInterval(async () => {
+      const segmentation = await net.segmentPerson(video);
+      const backgroundBlurAmount = 10;
+      const edgeBlurAmount = 15;
+      const flipHorizontal = true;
+      requestAnimationFrame(() => {
+        bodyPix.drawBokehEffect(canvas.current, mainVideo.current, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);
+      });
+    }, 16.7);
 };

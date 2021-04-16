@@ -4,17 +4,19 @@ import { handleMic } from "../../Assets/VideoCallFunctions";
 
 const speechRecognitionTool = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
+
 if (speechRecognitionTool !== undefined) {
   recognition = new speechRecognitionTool();
 }
 
 const SpeechRecognition = ({ audio, lang, socket, roomId, user, text }) => {
   const [speech, setSpeech] = useState("");
-
+  const [started, setStarted] = useState(false);
   useEffect(() => {
     if (typeof speechRecognitionTool !== "undefined") {
-      handleMic(recognition, lang, handleText, audio);
+      handleMic(recognition, lang, handleText, audio, started, setStarted);
     }
+
     return () => {
       recognition.stop();
     };
