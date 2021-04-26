@@ -15,7 +15,7 @@ export const CreatePeer = (userToSignal, caller, stream, socket) => {
 
   peer.user = userToSignal;
   peer.on("signal", (signal) => {
-    console.log("sending-signal");
+    //console.log("sending-signal");
     socket.emit("sending-signal", { userToSignal, caller, signal });
   });
 
@@ -30,11 +30,11 @@ export const LoadSignRecognition = async (videoRef, value, setText) => {
       const net = await tf.loadGraphModel("https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json");
       interval = setInterval(() => {
         detect(net, videoRef, setText);
-      }, 16.7);
+      }, 1000);
       secondInterval = setInterval(() => {
         setText("");
-      }, 2000);
-      console.log("sign language", value);
+      }, 3000);
+      //console.log("sign language", value);
     }
   } catch (error) {
     console.log(error);
@@ -51,7 +51,7 @@ const detect = async (net, videoRef, setText) => {
   const boxes = await obj[1].array();
   const classes = await obj[2].array();
   const scores = await obj[4].array();
-  const threshold = 0.9;
+  const threshold = 0.95;
   requestAnimationFrame(() => {
     textDetection(boxes[0], classes[0], scores[0], threshold, setText);
   });
@@ -85,7 +85,7 @@ export const AddPeer = (incomingSignal, caller, stream, socket) => {
   });
 
   peer.on("signal", (signal) => {
-    console.log("receiving signal");
+    //console.log("receiving signal");
     socket.emit("returning-signal", { signal, caller });
   });
 
@@ -113,7 +113,7 @@ export const handleMic = (mic, language, setSpeech, audio, rec, setRec) => {
     };
   } else {
     mic.stop();
-    setRec(false);
+    setSpeech("");
     mic.onend = () => {
       console.log("Stopped Mic on Click");
     };
@@ -152,7 +152,6 @@ export const mapDispatchToProps = (dispatch) => ({
 });
 
 export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
-  console.log("blur", blurBackground);
   if (intervalBlur) {
     clearInterval(intervalBlur);
   }
@@ -164,7 +163,7 @@ export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
     };
     const width = mainVideo.current.videoWidth;
     const height = mainVideo.current.videoHeight;
-    canvas.current.width = width;
+    canvas.current.width = width * 2;
     canvas.current.height = height;
     mainVideo.current.width = width;
     mainVideo.current.height = height;
@@ -181,7 +180,7 @@ const perform = async (net, video, canvas, mainVideo, blurBackground) => {
     setInterval(async () => {
       const segmentation = await net.segmentPerson(video);
       const backgroundBlurAmount = 10;
-      const edgeBlurAmount = 15;
+      const edgeBlurAmount = 5;
       const flipHorizontal = true;
       requestAnimationFrame(() => {
         bodyPix.drawBokehEffect(canvas.current, mainVideo.current, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);

@@ -5,7 +5,6 @@ export const tokenRefresh = async (func, endp, data) => {
   if (response.ok) {
     return await func(endp, data);
   } else {
-    console.log(response);
     return false;
   }
 };

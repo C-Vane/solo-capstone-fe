@@ -7,6 +7,10 @@ body {
 #simple-menu div.MuiPaper-root {
   top: 10vh !important;
 }
+.carousel.carousel-slider {
+  max-width: 100%;
+  margin: auto;
+}
 
 #simple-menu li,
 #simple-menu a {

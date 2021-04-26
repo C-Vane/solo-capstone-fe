@@ -20,11 +20,11 @@ const VideoOther = (props) => {
     if (props.user) {
       props.room.admin.user == props.user._id && setAdmin(true);
     }
-    peer.peer.on("stream", (stream) => {
-      VideoRef.current.srcObject = stream;
-      setVideo(stream.getVideoTracks()[0].enabled);
-    });
-    console.log(peer.blur);
+    peer.peer &&
+      peer.peer.on("stream", (stream) => {
+        VideoRef.current.srcObject = stream;
+        setVideo(stream.getVideoTracks()[0].enabled);
+      });
     handleBackgroundBlur(peer.blur);
   }, [peer]);
 

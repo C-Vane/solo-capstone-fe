@@ -17,14 +17,12 @@ export const CallSettings = ({ room, setRoom, anchor, setLanguage, setAnchor, ad
   };
 
   useEffect(() => {
-    console.log(admin, room);
     room && setPrivateRoom(room.private) && setChat(room.chat);
   }, [room]);
 
   const editRoom = async (e) => {
     const data = { [e.target.name]: e.target.checked };
     const updatedRoom = await putFunction("room/" + room._id, data);
-    console.log(updatedRoom);
     if (updatedRoom && updatedRoom._id) {
       e.target.name === "chat" ? setChat(!chat) : setPrivateRoom(!privateRoom);
       setRoom(updatedRoom);

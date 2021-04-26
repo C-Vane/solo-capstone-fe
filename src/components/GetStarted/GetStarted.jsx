@@ -22,7 +22,7 @@ const GetStarted = (props) => {
           <IconButton aria-label='close' className='float-right' onClick={props.close}>
             <CloseIcon />
           </IconButton>
-          <div className='p-md-4 ps-1'>
+          <div className='p-md-4 p-2'>
             <Logo />
             <div className='mb-4 p-md-3 py-3'>
               {welcome ? (

@@ -10,7 +10,6 @@ export const StartVideoCallPage = (props) => {
   const [privateRoom, setPrivateRoom] = useState("true");
   const [chat, setChat] = useState("true");
   const createRoom = async () => {
-    console.log(privateRoom, chat);
     const response = await postFunction("room", { private: privateRoom, chat });
     if (response._id) {
       props.history.push(`/video/${response._id}`);

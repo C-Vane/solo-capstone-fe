@@ -55,7 +55,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
           <IconButton aria-label='close' className='float-right' onClick={Close}>
             <CloseIcon />
           </IconButton>
-          <div className='p-sm-2 p-md-4 ps-1'>
+          <div className='p-2 p-md-4'>
             <Logo />
 
             <div className='mb-4 p-md-3 py-3'>

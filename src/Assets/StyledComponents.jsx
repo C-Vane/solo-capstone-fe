@@ -2,12 +2,23 @@ import { Button } from "react-bootstrap";
 import styled from "styled-components";
 import { FreeBreakfastTwoTone, PanToolTwoTone, ThumbDownTwoTone, ThumbUpTwoTone } from "@material-ui/icons";
 import { Container, Chip } from "@material-ui/core";
-import img from "./SI.png";
-import img_full from "./SiFull.png";
+import img from "./img/SI.png";
+import img_full from "./img/SiFull.png";
+import thumbsUp from "./img/thumbs-up.png";
+import thumbsDown from "./img/thumbs-down.png";
+import raiseHand from "./img/raised-hand.png";
+import teabreak from "./img/break.png";
 
 import React from "react";
 
-export const ReactionsList = [<ThumbUpTwoTone />, <ThumbDownTwoTone />, <PanToolTwoTone />, <FreeBreakfastTwoTone />, <Chip label='YES' />, <Chip label='NO' />];
+export const ReactionsList = [
+  <img src={thumbsUp} height='60' alt='Thumbs Up' />,
+  <img src={thumbsDown} height='60' alt='Thumbs Down' />,
+  <img src={raiseHand} height='60' alt='Raise Hand' />,
+  <img src={teabreak} height='60' alt='Take Break or coffee break' />,
+  <Chip label='YES' color='primary' />,
+  <Chip label='NO' color='secondary' />,
+];
 
 export const SIGN_IN = "Sign In";
 
@@ -98,7 +109,7 @@ export const NavItem = styled.div`
 `;
 export const ReactionVideo = styled.div`
   position: absolute;
-  right: 4vmin;
+  right: 5vmin;
   top: 4vmin;
   z-index: 10;
   svg {
@@ -106,6 +117,9 @@ export const ReactionVideo = styled.div`
   }
 `;
 export const ReactionListItem = styled.div`
+  img {
+    height: 30px;
+  }
   &:hover {
     opacity: 0.5;
   }
@@ -166,10 +180,10 @@ export const Video = styled.video`
 `;
 export const Canvas = styled.canvas`
   position: absolute;
-  left: 0px;
+  left: 15px;
   max-width: 100vw;
   max-height: 85vh;
-  width: 100%;
+  width: 95%;
   height: 100%;
   object-fit: cover;
   overflow: hidden;
@@ -202,7 +216,8 @@ export const BackDrop = styled.div`
 export const ContainerAdmitModal = styled.div`
   height: 80vh;
   margin: auto;
-  width: 50vmax;
+  width: max-content;
+  max-width: 90vw;
 `;
 export const ContainerOtherVideo = styled.div`
   display: flex;
@@ -219,6 +234,40 @@ export const DivHalf = styled.div`
   justify-content: around;
   flex-shrink: 0;
 `;
+
+export const CircularImage = styled.div`
+  position: relative;
+  width: 20vw;
+  height: 20vw;
+  min-width: 120px;
+  min-height: 120px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: auto;
+  div {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: rgba(57, 96, 61, 0.3);
+  }
+  img {
+    filter: brightness(0.1);
+    filter: contrast(1);
+    width: 100%;
+    height: auto;
+  }
+`;
+export const TextContainer = styled.div`
+  h3 {
+    color: #39603d;
+  }
+  margin: auto;
+  width: 75%;
+  padding: 5vh 0;
+`;
+
 export const Description = styled.div`
   margin-bottom: 15vmin;
   h1 {
@@ -231,11 +280,29 @@ export const MainContainer = styled(Container)`
   display: flex !important;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin-top: 8vh;
-
+  min-height: 100vh;
+  padding-top: 15vh;
+  h1 {
+    font-size: 8vw;
+  }
+  h3 {
+    font-size: 5vw;
+  }
+  h5 {
+    font-size: 6vw;
+  }
   @media (min-width: 576px) {
     max-width: 100vw;
+    h1 {
+      font-size: 32px;
+    }
+    h3 {
+      font-size: 30px;
+    }
+
+    h5 {
+      font-size: 25px;
+    }
   }
 
   @media (min-width: 900px) {
@@ -243,6 +310,16 @@ export const MainContainer = styled(Container)`
   }
   @media (min-width: 1024px) {
     max-width: 70vw;
+    h1 {
+      font-size: 37px;
+    }
+    h3 {
+      font-size: 35px;
+    }
+
+    h5 {
+      font-size: 30px;
+    }
   }
   @media (min-width: 1440px) {
     max-width: 50vw;

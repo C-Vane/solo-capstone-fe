@@ -194,7 +194,6 @@ export const CallPage = (props) => {
 
       socketRef.current.on("set-video-background", (payload) => {
         const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
-        console.log(payload);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], blur: payload.blur }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
@@ -306,9 +305,9 @@ export const CallPage = (props) => {
     socketRef.current.emit("video-background", { roomId: roomID, user, blur: e.target.checked });
     loadBodyPix(mainVideo, canvas, e.target.checked);
   };
-  const handleSignRecognition = (e) => {
-    setSignRecognition(e);
-    LoadSignRecognition(mainVideo, e, handelRecognizedGesture);
+  const handleSignRecognition = (value) => {
+    setSignRecognition(value);
+    LoadSignRecognition(mainVideo, value, handelRecognizedGesture);
   };
   const handelRecognizedGesture = (value) => {
     setText(value);

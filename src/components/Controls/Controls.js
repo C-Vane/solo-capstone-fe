@@ -59,7 +59,7 @@ function Controls({
   const [reactionTab, setReactionTab] = useState(null);
 
   return (
-    <div>
+    <div className='mt-2'>
       <Paper elevation={1} className='d-flex justify-content-around p-2 flex-wrap'>
         <DivHalf>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverVideo}>
