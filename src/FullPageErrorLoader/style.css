@@ -63,16 +63,16 @@
   position: relative;
   overflow: hidden;
   width: 250px;
-  height: 2px;
-  background-color: #c1c1c1;
+  height: 3px;
+  background-color: #a3bcb6;
   margin: auto;
 }
 .shape {
   position: absolute;
   left: 0;
-  background-color: rgb(0, 0, 0);
+  background-color: #39603d;
   width: 80px;
-  height: 2px;
+  height: 3px;
   display: block;
   top: 0;
   transition: all 1s ease-in-out;

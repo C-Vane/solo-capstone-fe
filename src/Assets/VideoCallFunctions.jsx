@@ -163,7 +163,7 @@ export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
     };
     const width = mainVideo.current.videoWidth;
     const height = mainVideo.current.videoHeight;
-    canvas.current.width = width * 2;
+    canvas.current.width = width;
     canvas.current.height = height;
     mainVideo.current.width = width;
     mainVideo.current.height = height;

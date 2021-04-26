@@ -30,21 +30,26 @@ export const Bar = styled.header`
   position: fixed;
   top: 0;
   z-index: 999;
-  background: #d1e8e220;
+  backbround: rgba(57, 96, 61, 0.3);
 `;
 
 export const Nav = styled.nav`
   display: flex;
-  padding: 2vmin 2vmin 0 2vmin;
+  padding: 2vmin;
   justify-content: space-between;
   width: 100%;
-
-  div {
+  > div.nav-links {
     align-self: flex-end;
+  }
+  .dropdown-toggle::after {
+    align-self: center;
+  }
+  > div {
+    align-self: center;
     display: flex;
     height: inherit;
     a {
-      color: #3c403d;
+      color: #39603d;
       text-decoration: none;
       float: left;
       align-self: flex-end;
@@ -55,7 +60,7 @@ export const Nav = styled.nav`
         background: rgb(38, 38, 38, 0.05);
       }
       &.active {
-        border-bottom-color: #262626;
+        border-bottom-color: #39603d;
         font-weight: 600;
         color: #262626;
       }
@@ -79,16 +84,14 @@ export const Logo = styled.div`
   background-position: center;
 `;
 export const LogoFullName = styled.div`
-  width: 10vmin;
-  height: 30vmin;
-  max-height: 120px;
+  width: 40vmin;
+  height: 20vmin;
+  max-height: 70px;
   max-width: 250px;
-  min-height: 60px;
-  min-width: 150px;
+  min-height: auto;
+  min-width: 120px;
   background-image: url(${img_full});
   border-radius: 5px;
-  margin-right: 10px;
-  margin-bottom: 10px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -100,11 +103,13 @@ export const NavItem = styled.div`
   text-decoration: none;
   margin: 3px 5vmin;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #39603d;
   span {
     font-weight: 300;
+    margin-left: 2vh;
+    font-size: 15px;
   }
 `;
 export const ReactionVideo = styled.div`
@@ -183,7 +188,7 @@ export const Canvas = styled.canvas`
   left: 15px;
   max-width: 100vw;
   max-height: 85vh;
-  width: 95%;
+  min-width: 95%;
   height: 100%;
   object-fit: cover;
   overflow: hidden;
@@ -234,7 +239,19 @@ export const DivHalf = styled.div`
   justify-content: around;
   flex-shrink: 0;
 `;
+export const QuickContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 3vh;
+  background-color: rgba(57, 96, 61, 0.3);
+  h5 {
+    color: #39603d;
+  }
 
+  @media (min-width: 576px) {
+    margin-bottom: 15vh;
+  }
+`;
 export const CircularImage = styled.div`
   position: relative;
   width: 20vw;
@@ -265,11 +282,12 @@ export const TextContainer = styled.div`
   }
   margin: auto;
   width: 75%;
-  padding: 5vh 0;
+  padding: 2vh 0;
 `;
 
 export const Description = styled.div`
-  margin-bottom: 15vmin;
+  margin-top: 10vmin;
+  margin-bottom: 5vh;
   h1 {
     margin-bottom: 5vmin;
   }
@@ -282,6 +300,9 @@ export const MainContainer = styled(Container)`
   align-items: center;
   min-height: 100vh;
   padding-top: 15vh;
+  p {
+    font-size: 20px;
+  }
   h1 {
     font-size: 8vw;
   }

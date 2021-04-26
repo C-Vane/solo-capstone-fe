@@ -38,7 +38,7 @@ export const StartVideoCallPage = (props) => {
             <Switch checked={privateRoom} onChange={(e) => setPrivateRoom(e.target.checked)} color='primary' name='private' inputProps={{ "aria-label": "Private Room checkbox" }} />
           </ListItem>
         </List>
-        <Button variant='outline-dark' className='m-3 rounded-0' onClick={createRoom}>
+        <Button variant='outline-dark' className='m-3 rounded-0 float-right' onClick={createRoom}>
           START CALL
         </Button>
       </Container>
@@ -46,7 +46,12 @@ export const StartVideoCallPage = (props) => {
   );
 };
 const StartCall = styled.section`
+  margin: 5%;
   margin-top: 20vh;
+  @media (min-width: 576px) {
+    margin: 20%;
+    margin-top: 25vh;
+  }
 `;
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartVideoCallPage);

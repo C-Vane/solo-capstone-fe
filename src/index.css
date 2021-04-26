@@ -4,24 +4,84 @@ body {
   background-color: #daded4;
   z-index: -1;
 }
+.MuiPaper-root {
+  border-radius: 0 !important;
+}
 #simple-menu div.MuiPaper-root {
-  top: 10vh !important;
+  top: 12vh !important;
 }
 .carousel.carousel-slider {
   max-width: 100%;
   margin: auto;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
+.MuiInput-underline:after {
+  border-bottom: 2px solid #355e3b !important;
+}
+.btn-outline-dark {
+  color: #3c403d;
+  border-color: #3c403d;
+}
+.btn-outline-dark:hover,
+.btn-outline-dark:active {
+  background-color: #3c403d;
+  border-color: #3c403d;
+}
+.btn-outline-success {
+  color: #355e3b;
+  border-color: #355e3b;
+}
+.btn-outline-success:hover,
+.btn-outline-success:active {
+  background-color: #355e3b;
+  border-color: #355e3b;
+}
+.btn-outline-danger {
+  color: #ad5d3c;
+  border-color: #ad5d3c;
+}
+.btn-outline-danger:hover,
+.btn-outline-danger:active {
+  background-color: #ad5d3c;
+  border-color: #ad5d3c;
+}
 
+.carousel .control-dots .dot {
+  box-shadow: none !important;
+  background: #39603d !important;
+}
+.MuiSwitch-colorPrimary.Mui-checked {
+  color: #39603d !important;
+}
+.MuiSwitch-colorPrimary.Mui-checked + .MuiSwitch-track {
+  background-color: #a3bcb6 !important;
+}
+.MuiIconButton-root {
+  color: #39603d !important;
+}
+.carousel.carousel-slider .control-arrow:hover {
+  background: rgba(0, 0, 0, 0) !important;
+}
+.carousel .control-arrow:active {
+  opacity: 1;
+}
+.carousel .control-arrow:focus {
+  opacity: 0.5;
+}
 #simple-menu li,
 #simple-menu a {
   color: #2c3531;
 }
 #simple-menu a:hover {
   text-decoration: none;
+  background: #daded4;
 }
 
 #simple-menu li:hover {
   color: #2c3531;
+  background: #daded4;
 }
 #reactions .MuiPopover-paper {
   border-radius: 200px;

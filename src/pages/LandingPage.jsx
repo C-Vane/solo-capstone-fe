@@ -1,7 +1,7 @@
 import { Grid, Input } from "@material-ui/core";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { CircularImage, Description, MainContainer, SIGN_IN, TextContainer } from "../Assets/StyledComponents";
+import { CircularImage, Description, MainContainer, SIGN_IN, TextContainer, QuickContainer } from "../Assets/StyledComponents";
 import GetStarted from "../components/GetStarted/GetStarted";
 import { Button, Container } from "react-bootstrap";
 import { getFunction, postFunction } from "../functions/CRUDFunctions";
@@ -50,30 +50,44 @@ export const LandingPage = ({ user, history }) => {
               <h1> Signdacity is a video Chat platform made for everyone! </h1>
               <p>We use speech to text and sign language recognition AI to facilitate video meetings for people with speaking or hearing impairments. </p>
             </Description>
+            <QuickContainer>
+              <h5>Quick Start</h5>
 
-            {user._id ? (
-              <div>
-                <h5>Quick Start</h5>
-                <Button variant='outline-dark' className='m-3 rounded-0' onClick={createRoom}>
-                  New Call
-                </Button>
-                <Input onChange={(e) => setLink(e.target.value)} value={link} placeholder='Enter a code or link' />
-                <Button variant='outline-dark' className={link.length > 0 ? "ml-  rounded-0" : "d-none"} onClick={() => joinCall()}>
-                  Join Call
-                </Button>
-              </div>
-            ) : (
-              <div>
-                <Input onChange={(e) => setLink(e.target.value)} value={link} placeholder='Enter a code or link' />
-                <Button variant='outline-dark' className={link.length > 0 ? "ml-3 rounded-0" : "d-none"} onClick={() => joinCall()}>
-                  Join Call
-                </Button>
-              </div>
-            )}
-            <i className={error.length > 0 ? "text-danger" : "d-none"}>{error}</i>
+              {user._id ? (
+                <>
+                  <p>Create a new call or enter link or code to join active call.</p>
+                  <div>
+                    <Button variant='outline-dark' className='mr-3 rounded-0 w-75' onClick={createRoom}>
+                      New Call
+                    </Button>
+                    <div className='d-flex mt-3'>
+                      <Input onChange={(e) => setLink(e.target.value)} value={link} placeholder='Enter a code or link' className='w-75' />
+                      <div className='w-25'>
+                        <Button variant='outline-dark' className={link.length > 0 ? "ml-2 rounded-0" : "d-none"} onClick={() => joinCall()}>
+                          Join
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p>Enter link or code to join active call or Sign up to create your own call.</p>
+                  <div className='d-flex'>
+                    <Input onChange={(e) => setLink(e.target.value)} value={link} placeholder='Enter a code or link' className='w-75' />
+                    <div className='w-25'>
+                      <Button variant='outline-dark' className={link.length > 0 ? "ml-3 rounded-0" : "d-none"} onClick={() => joinCall()}>
+                        Join
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+              <i className='text-danger'>{error}</i>
+            </QuickContainer>
           </Grid>
           <Grid item sm={6}>
-            <div>
+            <div className='h-100'>
               <Carousel showArrows={true} interval={5000} infiniteLoop={true} showThumbs={false} autoPlay={true} width={"90vw"} showStatus={false}>
                 <div>
                   <CircularImage>

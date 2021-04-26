@@ -42,10 +42,10 @@ export const NavBar = (props) => {
       <Container>
         <Nav>
           <Link to='/'>
-            <LogoFullName className='h-100 w-100' />
+            <LogoFullName />
           </Link>
           {user._id && (
-            <div>
+            <div className='nav-links'>
               <Link to='/' className={location.pathname === "/" ? "active" : ""}>
                 <NavItem>
                   <Home /> <span className='d-none d-md-block'>Home</span>
@@ -60,12 +60,15 @@ export const NavBar = (props) => {
             </div>
           )}
           {user._id ? (
-            <div>
-              <Avatar alt={user.firstName} className={{ objectFit: "cover" }} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2 '></Avatar>
+            <div className='nav-links'>
+              <div onClick={(e) => setMenu(e.target)} className='mb-2 cursor-pointer dropdown-toggle d-flex'>
+                <Avatar alt={user.firstName} className={{ objectFit: "cover" }} src={user.img}></Avatar>
+              </div>
               <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)} onClick={() => setMenu(null)}>
                 <MenuItem>
-                  <AccountCircleOutlined className='mr-2' />
-                  <Link to='/account'>My account</Link>
+                  <Link to='/account'>
+                    <AccountCircleOutlined className='mr-2' /> My account
+                  </Link>
                 </MenuItem>
                 {/*<MenuItem>
                 <Settings/>
@@ -78,12 +81,12 @@ export const NavBar = (props) => {
               </Menu>
             </div>
           ) : (
-            <div>
-              <Button variant='outline-dark' className='ml-3 rounded-0' onClick={() => setGetStarted(SIGN_UP)}>
+            <div className='d-flex'>
+              <Button variant='outline-dark' className='ml-1 py-md-2 px-md-3 p-sm-1 rounded-0 text-nowrap' onClick={() => setGetStarted(SIGN_UP)}>
                 Sign Up
               </Button>
 
-              <Button variant='outline-dark' className='ml-3  rounded-0' onClick={() => setGetStarted(SIGN_IN)}>
+              <Button variant='outline-dark' className='ml-1 ml-md-3 py-md-2 px-md-3 p-sm-1 rounded-0 text-nowrap' onClick={() => setGetStarted(SIGN_IN)}>
                 Sign In
               </Button>
             </div>
