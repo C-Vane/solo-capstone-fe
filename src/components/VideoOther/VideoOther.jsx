@@ -45,7 +45,7 @@ const VideoOther = (props) => {
       {admin && (
         <OtherOptions>
           <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
-          <Menu id='simple-menu' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)} onClick={() => setMenu(null)}>
+          <Menu id='menu-other-user' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)} onClick={() => setMenu(null)}>
             <MenuItem onClick={() => kickOut(user.socketId)}>Kick out</MenuItem>
             <MenuItem onClick={() => muteUsers(user.socketId)}>Mute</MenuItem>
           </Menu>
@@ -57,7 +57,7 @@ const VideoOther = (props) => {
           {user.firstname} {user.lastname}
         </NameBig>
       )}
-      <Video playsInline autoPlay ref={VideoRef} muted={muted} />
+      <Video playsInline autoPlay ref={VideoRef} muted={muted} className='h-100' />
       <Canvas ref={CanvasRef} className={peer.blur ? "" : "d-none"}></Canvas>
       {!video && <VideoImage src={user.img} />}
       {size === 6 && <div className='m-auto'>{peer.text && <Speech>{peer.text}</Speech>}</div>}

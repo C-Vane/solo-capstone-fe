@@ -344,12 +344,12 @@ export const CallPage = (props) => {
             </div>
           </Slide>
 
-          <Row>
+          <Row className='h-100'>
             <Col sm={peers.length > 3 || peers.length === 0 ? 12 : 6} className='mt-3'>
               <NameBig>{currentUser}</NameBig>
               {reaction !== null && <Reaction num={reaction} />}
-              <Video autoPlay ref={mainVideo} poster={user.img} muted={muted}></Video>
-              <Canvas ref={canvas} className={blurBackground ? "" : "d-none"}></Canvas>
+              <Video autoPlay ref={mainVideo} poster={user.img} muted={muted} className='h-100'></Video>
+              <Canvas ref={canvas} className={blurBackground ? "h-100" : "d-none"}></Canvas>
               {!video && <VideoImage src={user.img} />}
               <SpeechRecognition audio={speech && audio} lang={language} socket={socketRef} user={user} roomId={roomID} text={text} />
             </Col>

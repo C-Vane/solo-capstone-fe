@@ -133,7 +133,7 @@ export const ReactionListItem = styled.div`
 export const Speech = styled.div`
   position: absolute;
   z-index: 1;
-  bottom: 10vmin;
+  bottom: 5vmin;
   left: 0;
   right: 0;
   color: #fff;
@@ -149,7 +149,7 @@ export const Name = styled.div`
   z-index: 1;
   top: -20px;
   color: #fff;
-  background-color: #000;
+  background-color: #3c403d;
   margin: auto;
   padding: 2px 10px;
 `;
@@ -157,25 +157,41 @@ export const NameBig = styled.div`
   position: absolute;
   font-size: 3vmin;
   z-index: 1;
-  top: 4vmin;
-  left: 4vmin;
+  top: 3vmin;
+  left: 6vmin;
   color: #fff;
-  background-color: #000;
+  background-color: #3c403d;
   width: max-content;
   padding: 2px 10px;
 `;
 export const OtherOptions = styled.div`
   position: absolute;
-  top: 4vmin;
-  right: 4vmin;
-  z-index: 2;
+  top: 3vmin;
+  right: 6vmin;
+  z-index: 1;
+`;
+export const ControlsContainer = styled.div`
+  position: fixed;
+  bottom: 5px;
+  z-index: 1;
+  width: 90%;
+  .MuiChip-root {
+    display: none;
+  }
+  @media (min-width: 576px) {
+    .MuiChip-root {
+      display: block;
+    }
+  }
 `;
 
 export const Video = styled.video`
   max-width: 100vw;
-  max-height: 85vh;
+  max-height: 79vh;
+  @media (min-width: 576px) {
+    max-height: 85vh;
+  }
   width: 100%;
-  height: 100%;
   object-fit: cover;
   overflow: hidden;
   transform: rotateY(180deg);
@@ -198,7 +214,8 @@ export const Canvas = styled.canvas`
 export const VideoImage = styled.img`
   position: absolute;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 99%;
+  background-color: #000;
   top: 0;
   left: 0;
   right: 0;
@@ -230,8 +247,12 @@ export const ContainerOtherVideo = styled.div`
   max-height: 20vh;
 `;
 export const ContainerMain = styled(Container)`
-  max-height: 100vh;
+  height: 79vh;
   margin-bottom: 1rem;
+  max-height: 79vh;
+  @media (min-width: 900px) {
+    max-height: 85vh;
+  }
 `;
 export const DivHalf = styled.div`
   min-width: 40%;
@@ -239,6 +260,20 @@ export const DivHalf = styled.div`
   justify-content: around;
   flex-shrink: 0;
 `;
+
+export const DivOther = styled(DivHalf)`
+  display: none;
+  @media (min-width: 900px) {
+    display: flex;
+  }
+`;
+export const AdditionalOptions = styled(DivHalf)`
+  display: flex;
+  @media (min-width: 900px) {
+    display: none;
+  }
+`;
+
 export const QuickContainer = styled.div`
   display: flex;
   flex-direction: column;

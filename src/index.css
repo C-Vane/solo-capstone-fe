@@ -70,22 +70,26 @@ body {
 .carousel .control-arrow:focus {
   opacity: 0.5;
 }
-#simple-menu li,
-#simple-menu a {
+.MuiMenu-list li,
+.MuiMenu-list a {
   color: #2c3531;
 }
-#simple-menu a:hover {
+.MuiMenu-list a:hover {
   text-decoration: none;
   background: #daded4;
 }
 
-#simple-menu li:hover {
+.MuiMenu-list li:hover {
   color: #2c3531;
   background: #daded4;
 }
 #reactions .MuiPopover-paper {
-  border-radius: 200px;
+  border-radius: 200px !important;
   width: 300px;
+  max-width: 80vw;
+}
+#other-options .MuiPopover-paper {
+  height: max-content;
   max-width: 80vw;
 }
 #Chat-Room .MuiPopover-paper {
