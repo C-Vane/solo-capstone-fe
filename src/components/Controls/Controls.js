@@ -59,7 +59,10 @@ function Controls({
   const [chatRoom, setChatRoom] = useState(null);
   const [reactionTab, setReactionTab] = useState(null);
   const [additionOptions, setAdditionOptions] = useState(null);
-
+  const LeaveHandlerSmall = () => {
+    setAdditionOptions(null);
+    LeaveHandler();
+  };
   return (
     <ControlsContainer>
       <Paper elevation={1} className='d-flex justify-content-around p-2 flex-wrap'>
@@ -250,12 +253,12 @@ function Controls({
               <Button variant='outline-success' className='m-auto p-1 rounded-0' onClick={(e) => setInvite(e.target)}>
                 Invite
               </Button>
-              <Button variant='outline-danger' className='m-auto p-1 rounded-0' onClick={LeaveHandler}>
+              <Button variant='outline-danger' className='m-auto p-1 rounded-0' onClick={LeaveHandlerSmall}>
                 End Call
               </Button>
             </>
           ) : (
-            <Button variant='outline-danger' className='m-auto rounded-0' onClick={LeaveHandler}>
+            <Button variant='outline-danger' className='m-auto rounded-0' onClick={LeaveHandlerSmall}>
               Leave
             </Button>
           )}
