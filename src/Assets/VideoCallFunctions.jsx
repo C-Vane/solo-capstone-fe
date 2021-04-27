@@ -51,7 +51,7 @@ const detect = async (net, videoRef, setText) => {
   const boxes = await obj[1].array();
   const classes = await obj[2].array();
   const scores = await obj[4].array();
-  const threshold = 0.95;
+  const threshold = 0.9;
   requestAnimationFrame(() => {
     textDetection(boxes[0], classes[0], scores[0], threshold, setText);
   });
