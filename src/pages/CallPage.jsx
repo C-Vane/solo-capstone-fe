@@ -31,7 +31,7 @@ import Reaction from "../components/Reaction/Reaction";
 import * as tf from "@tensorflow/tfjs";
 
 const videoConstraints = {
-  height: window.innerWidth * 2,
+  height: window.innerHeight * 2,
   width: window.innerHeight * 2,
 };
 
