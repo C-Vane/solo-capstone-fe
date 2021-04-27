@@ -7,6 +7,10 @@ body {
 .MuiPaper-root {
   border-radius: 0 !important;
 }
+#other-options .MuiPaper-root {
+  border-radius: 5px !important;
+}
+
 #simple-menu div.MuiPaper-root {
   top: 12vh !important;
 }
@@ -99,4 +103,7 @@ body {
   min-height: 150px !important;
   overflow-x: hidden !important;
   overflow-y: hidden !important;
+}
+#invite-manu {
+  z-index: 1301 !important;
 }

@@ -97,7 +97,7 @@ export const CallPage = (props) => {
   }, []);
 
   useEffect(() => {
-    setCurrentUser(`${user.firstname} ${user.lastname}`);
+    setCurrentUser(user);
     if (!user._id || !props.room.admin) {
       if (props.user._id) {
         setUser(props.user);
@@ -164,6 +164,14 @@ export const CallPage = (props) => {
           user: payload.user,
         });
         setPeers((users) => [...users, { peer, user: payload.user }]);
+
+        for (let i = 0; i < 4; i++) {
+          peersRef.current.push({
+            peer,
+            user: payload.user,
+          });
+          setPeers((users) => [...users, { peer, user: payload.user }]);
+        }
       });
 
       socketRef.current.on("receiving-returned-signal", (payload) => {
@@ -251,17 +259,19 @@ export const CallPage = (props) => {
   const admitUser = (payload) => {
     socketRef.current.emit("admit-user", { roomId: roomID, adminId: userID, user: payload });
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
+    setAdmit(false);
   };
   const declineUser = (payload) => {
     //decline user
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
     socketRef.current.emit("decline-user", { roomId: roomID, adminId: userID, user: payload });
+    setAdmit(false);
   };
   const setMain = (stream, newUser) => {
     const oldStream = mainVideo.current.srcObject;
-    const oldUser = user;
+    const oldUser = currentUser;
     mainVideo.current.srcObject = stream;
-    setCurrentUser(`${newUser.firstname} ${newUser.lastname}`);
+    setCurrentUser(newUser);
     newUser._id === user._id ? setMuted(true) : setMuted(false);
 
     return { stream: oldStream, newUser: oldUser, muted: !muted };
@@ -343,30 +353,31 @@ export const CallPage = (props) => {
               <AdmitUserModal admitUser={admitUser} declineUser={declineUser} waitingList={waitingList} close={() => setAdmit(false)} />
             </div>
           </Slide>
+          <div className='pb-4'>
+            <Row>
+              <Col sm={peers.length > 3 || peers.length === 0 ? 12 : 6} className='mt-3'>
+                <NameBig>{currentUser.firstname + " " + currentUser.lastname}</NameBig>
+                {reaction !== null && <Reaction num={reaction} />}
+                <Video autoPlay ref={mainVideo} poster={user.img} muted={muted} className='h-100'></Video>
+                <Canvas ref={canvas} className={blurBackground ? "h-100" : "d-none"}></Canvas>
+                {!video && <VideoImage src={user.img} />}
+                <SpeechRecognition audio={speech && audio} lang={language} socket={socketRef} user={user} roomId={roomID} text={text} />
+              </Col>
+              {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} muteUsers={MuteUsers} kickOut={KickOut} />)}
+            </Row>
 
-          <Row className='h-100'>
-            <Col sm={peers.length > 3 || peers.length === 0 ? 12 : 6} className='mt-3'>
-              <NameBig>{currentUser}</NameBig>
-              {reaction !== null && <Reaction num={reaction} />}
-              <Video autoPlay ref={mainVideo} poster={user.img} muted={muted} className='h-100'></Video>
-              <Canvas ref={canvas} className={blurBackground ? "h-100" : "d-none"}></Canvas>
-              {!video && <VideoImage src={user.img} />}
-              <SpeechRecognition audio={speech && audio} lang={language} socket={socketRef} user={user} roomId={roomID} text={text} />
-            </Col>
-            {peers.length < 4 && peers.map((peer, index) => <VideoOther key={index} peer={peer} size={6} muteUsers={MuteUsers} kickOut={KickOut} />)}
-          </Row>
-
-          {peers.length > 3 && (
-            <Scrollbars style={{ width: "100%", minHeight: "23vh" }}>
-              <div style={{ width: "100%", minHeight: "23vh" }}>
-                <ContainerOtherVideo>
-                  {peers.map((peer, index) => (
-                    <VideoOther key={index} peer={peer} setMain={setMain} size={3} muteUsers={MuteUsers} kickOut={KickOut} />
-                  ))}
-                </ContainerOtherVideo>
-              </div>
-            </Scrollbars>
-          )}
+            {peers.length > 3 && (
+              <Scrollbars style={{ width: "100%", minHeight: "30vh" }}>
+                <div style={{ width: "100%", minHeight: "30h" }}>
+                  <ContainerOtherVideo>
+                    {peers.map((peer, index) => (
+                      <VideoOther key={index} peer={peer} setMain={setMain} size={3} muteUsers={MuteUsers} kickOut={KickOut} />
+                    ))}
+                  </ContainerOtherVideo>
+                </div>
+              </Scrollbars>
+            )}
+          </div>
           <Controls
             admin={admin}
             setInvite={setInvite}

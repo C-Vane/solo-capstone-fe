@@ -174,10 +174,41 @@ export const ControlsContainer = styled.div`
   position: fixed;
   bottom: 5px;
   z-index: 1;
-  width: 90%;
+  min-width: 90vw;
+  min-height: 10vh;
+  display: flex;
+  cursor: pointer;
+
   .MuiChip-root {
     display: none;
   }
+
+  @media (hover: hover) and (pointer: fine) {
+    & > .MuiPaper-root {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 500ms linear, visibility 0s linear 500ms;
+    }
+    .MuiPaper-root .MuiSnackbar-root div,
+    .MuiPaper-root div {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    &:hover div.MuiPaper-root {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 500ms linear;
+    }
+  }
+  .MuiPaper-root {
+    background-color: #eef1e9;
+    border-radius: 11px !important;
+    border-bottom: 2px solid rgb(57, 96, 61);
+    margin: auto !important;
+    min-width: 100%;
+  }
+
   @media (min-width: 576px) {
     .MuiChip-root {
       display: block;
@@ -191,6 +222,7 @@ export const Video = styled.video`
   @media (min-width: 576px) {
     max-height: 85vh;
   }
+  height: auto;
   width: 100%;
   object-fit: cover;
   overflow: hidden;
@@ -244,15 +276,11 @@ export const ContainerAdmitModal = styled.div`
 export const ContainerOtherVideo = styled.div`
   display: flex;
   width: 100%;
-  max-height: 20vh;
 `;
 export const ContainerMain = styled(Container)`
-  height: 79vh;
-  margin-bottom: 1rem;
+  min-height: 79vh;
+  margin-bottom: 10vh;
   max-height: min-content;
-  @media (min-width: 900px) {
-    max-height: 85vh;
-  }
 `;
 export const DivHalf = styled.div`
   min-width: 40%;
@@ -279,7 +307,6 @@ export const QuickContainer = styled.div`
   flex-direction: column;
   padding: 2vmin;
   max-width: 95vh;
-  background-color: #a3bcb6;
   background-color: #eef1e9;
   border-radius: 11px;
   border-bottom: 2px solid rgb(57, 96, 61);

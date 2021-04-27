@@ -22,8 +22,10 @@ const VideoOther = (props) => {
     }
     peer.peer &&
       peer.peer.on("stream", (stream) => {
-        VideoRef.current.srcObject = stream;
-        setVideo(stream.getVideoTracks()[0].enabled);
+        if (VideoRef.current) {
+          VideoRef.current.srcObject = stream;
+          setVideo(stream.getVideoTracks()[0].enabled);
+        }
       });
     handleBackgroundBlur(peer.blur);
   }, [peer]);
@@ -41,8 +43,8 @@ const VideoOther = (props) => {
     }
   };
   return (
-    <Col sm={size} xs={size === 6 ? 12 : size} onClick={() => setMain && changeStream()} className='mt-3'>
-      {admin && (
+    <Col sm={size === 6 ? 6 : 4} xs={size === 6 ? 12 : 6} md={size === 6 ? 6 : 3} onClick={() => setMain && changeStream()} className='mt-3 cursor-pointer'>
+      {admin && props.user._id !== user._id && (
         <OtherOptions>
           <Avatar alt={user.firstName} src={user.img} onClick={(e) => setMenu(e.target)} className='mb-2'></Avatar>
           <Menu id='menu-other-user' anchorEl={menu} keepMounted open={Boolean(menu)} onClose={() => setMenu(null)} onClick={() => setMenu(null)}>
@@ -57,13 +59,13 @@ const VideoOther = (props) => {
           {user.firstname} {user.lastname}
         </NameBig>
       )}
-      <Video playsInline autoPlay ref={VideoRef} muted={muted} className='h-100' />
+      <Video playsInline autoPlay ref={VideoRef} muted={muted} />
       <Canvas ref={CanvasRef} className={peer.blur ? "" : "d-none"}></Canvas>
       {!video && <VideoImage src={user.img} />}
       {size === 6 && <div className='m-auto'>{peer.text && <Speech>{peer.text}</Speech>}</div>}
       {size === 3 && (
         <Name>
-          {user.firstname} {user.lastname}
+          {user.firstname} <span className='d-none d-md-block'>{user.lastname}</span>
         </Name>
       )}
     </Col>

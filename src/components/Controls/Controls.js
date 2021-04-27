@@ -225,7 +225,7 @@ function Controls({
           horizontal: "left",
         }}
       >
-        <div className='p-1'>
+        <div className='p-2'>
           {chat && (
             <IconButton
               aria-label='chat'
@@ -250,10 +250,10 @@ function Controls({
 
           {admin ? (
             <>
-              <Button variant='outline-success' className='m-auto p-1 rounded-0' onClick={(e) => setInvite(e.target)}>
+              <Button variant='outline-success' className='mr-3 p-1 rounded-0' onClick={(e) => setInvite(e.target)}>
                 Invite
               </Button>
-              <Button variant='outline-danger' className='m-auto p-1 rounded-0' onClick={LeaveHandlerSmall}>
+              <Button variant='outline-danger' className='mr-2 p-1 rounded-0' onClick={LeaveHandlerSmall}>
                 End Call
               </Button>
             </>
