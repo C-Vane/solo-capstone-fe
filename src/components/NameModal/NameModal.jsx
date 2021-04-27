@@ -28,7 +28,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
         firstname: name,
         lastname: surname,
         _id: uuidv4(),
-        img: image,
+        img: image || "https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg",
       };
       setUser(user);
       window.localStorage.setItem("user", JSON.stringify(user));
