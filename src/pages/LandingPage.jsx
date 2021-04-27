@@ -47,7 +47,9 @@ export const LandingPage = ({ user, history }) => {
         <Grid container spacing={2}>
           <Grid item sm={6}>
             <Description>
-              <h1> Signdacity is a video Chat platform made for everyone! </h1>
+              <h1>
+                <b>Signdacity</b> is a video Chat platform made for <b>everyone!</b>
+              </h1>
               <p>We use speech to text and sign language recognition AI to facilitate video meetings for people with speaking or hearing impairments. </p>
             </Description>
             <QuickContainer>

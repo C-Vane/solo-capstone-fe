@@ -277,10 +277,14 @@ export const AdditionalOptions = styled(DivHalf)`
 export const QuickContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 3vh;
+  padding: 5vh;
   background-color: rgba(57, 96, 61, 0.3);
+  border-bottom: 2px solid rgb(57, 96, 61);
+  background-color: #eef1e9;
+  border-radius: 11px;
   h5 {
     color: #39603d;
+    font-weight: 900;
   }
 
   @media (min-width: 576px) {
