@@ -249,7 +249,7 @@ export const ContainerOtherVideo = styled.div`
 export const ContainerMain = styled(Container)`
   height: 79vh;
   margin-bottom: 1rem;
-  max-height: 79vh;
+  max-height: min-content;
   @media (min-width: 900px) {
     max-height: 85vh;
   }
