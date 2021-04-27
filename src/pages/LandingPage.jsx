@@ -57,7 +57,7 @@ export const LandingPage = ({ user, history }) => {
 
               {user._id ? (
                 <>
-                  <p>Create a new call or enter link or code to join active call.</p>
+                  <p>Create a new call or enter link or code to join active calls.</p>
                   <div>
                     <Button variant='outline-dark' className='mr-3 rounded-0 w-75' onClick={createRoom}>
                       New Call
@@ -74,7 +74,7 @@ export const LandingPage = ({ user, history }) => {
                 </>
               ) : (
                 <>
-                  <p>Enter link or code to join active call or Sign up to create your own call.</p>
+                  <p>Enter link or code to join active calls or Sign up to create your own call.</p>
                   <div className='d-flex'>
                     <Input onChange={(e) => setLink(e.target.value)} value={link} placeholder='Enter a code or link' className='w-75' />
                     <div className='w-25'>

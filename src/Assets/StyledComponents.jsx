@@ -277,18 +277,20 @@ export const AdditionalOptions = styled(DivHalf)`
 export const QuickContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5vh;
-  background-color: rgba(57, 96, 61, 0.3);
-  border-bottom: 2px solid rgb(57, 96, 61);
+  padding: 2vmin;
+  max-width: 95vh;
+  background-color: #a3bcb6;
   background-color: #eef1e9;
   border-radius: 11px;
+  border-bottom: 2px solid rgb(57, 96, 61);
   h5 {
     color: #39603d;
-    font-weight: 900;
+    font-weight: bold;
   }
 
   @media (min-width: 576px) {
     margin-bottom: 15vh;
+    padding: 4vmin;
   }
 `;
 export const CircularImage = styled.div`
@@ -362,7 +364,7 @@ export const MainContainer = styled(Container)`
     }
 
     h5 {
-      font-size: 25px;
+      font-size: 30px;
     }
   }
 
