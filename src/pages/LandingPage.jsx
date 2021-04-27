@@ -87,7 +87,7 @@ export const LandingPage = ({ user, history }) => {
             </QuickContainer>
           </Grid>
           <Grid item sm={6}>
-            <div className='h-100'>
+            <div className='h-100 mt-3 mt-lg-0'>
               <Carousel showArrows={true} interval={5000} infiniteLoop={true} showThumbs={false} autoPlay={true} width={"90vw"} showStatus={false}>
                 <div>
                   <CircularImage>

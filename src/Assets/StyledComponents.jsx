@@ -30,12 +30,12 @@ export const Bar = styled.header`
   position: fixed;
   top: 0;
   z-index: 999;
-  backbround: rgba(57, 96, 61, 0.3);
+  background-color: #daded461;
 `;
 
 export const Nav = styled.nav`
   display: flex;
-  padding: 2vmin;
+  padding: 2vmin 2vmin 0;
   justify-content: space-between;
   width: 100%;
   > div.nav-links {
@@ -334,7 +334,7 @@ export const MainContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding-top: 15vh;
+  padding-top: 8vh;
   p {
     font-size: 20px;
   }
@@ -348,6 +348,7 @@ export const MainContainer = styled(Container)`
     font-size: 6vw;
   }
   @media (min-width: 576px) {
+    padding-top: 15vh;
     max-width: 100vw;
     h1 {
       font-size: 32px;
@@ -362,10 +363,11 @@ export const MainContainer = styled(Container)`
   }
 
   @media (min-width: 900px) {
-    max-width: 80vw;
+    padding-top: 10vh;
+    max-width: 90vw;
   }
   @media (min-width: 1024px) {
-    max-width: 70vw;
+    max-width: 80vw;
     h1 {
       font-size: 37px;
     }
@@ -376,8 +378,11 @@ export const MainContainer = styled(Container)`
     h5 {
       font-size: 30px;
     }
+    .MuiGrid-item {
+      max-height: 80vh;
+    }
   }
   @media (min-width: 1440px) {
-    max-width: 50vw;
+    max-width: 70vw;
   }
 `;
