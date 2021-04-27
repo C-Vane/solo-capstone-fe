@@ -14,7 +14,8 @@ function Join({ setWelcome, setSignUp }) {
         </Button>
         <Button variant='outlined' href={GOOGLE_ENDPOINT} className='mb-3 w-75 text-normal justify-content-between pl-lg-5 '>
           <div className='d-flex justify-content-start ml-lg-5 ml-md-3 ml-sm-1'>
-            <img src='https://developers.google.com/identity/images/g-logo.png' alt='Google logo' width='20' className='img-fluid mr-3'></img> <span className='ml-md-3'> Sign Up with Google</span>
+            <img src='https://developers.google.com/identity/images/g-logo.png' alt='Google logo' width='20' height='20' className='img-fluid mr-3'></img>{" "}
+            <span className='ml-md-3'> Sign Up with Google</span>
           </div>
         </Button>
         <Button variant='outlined' onClick={() => setSignUp(true, false)} className='text-normal w-75 justify-content-between pl-lg-5 '>
