@@ -18,6 +18,7 @@ const FullPage = (props) => {
     const loggedInUser = await getFunction("users/me");
     if (loggedInUser && loggedInUser._id) {
       props.setUser(loggedInUser);
+      localStorage.setItem("user", loggedInUser);
     }
     setTimeout(() => {
       props.setLoading({ active: false });
