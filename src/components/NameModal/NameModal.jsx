@@ -80,7 +80,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           !e.target.checked && setSignRecognitionCheck(false);
                         }}
                       />
-                      <small className='d-md-none'>Video Camera</small>
+                      <small className='d-md-none text-wrap text-muted text-smaller'>Video Camera</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverAudio}>
@@ -96,7 +96,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           !e.target.checked && setSpeechCheck(false);
                         }}
                       />
-                      <small className='d-md-none'>Microphone</small>
+                      <small className='d-md-none text-wrap text-muted text-smaller'>Microphone</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSpeech}>
@@ -112,7 +112,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           e.target.checked ? setAudioCheck(true) : setSignRecognitionCheck(false);
                         }}
                       />
-                      <small className='d-md-none'>Speech recognition</small>
+                      <small className='d-md-none text-wrap text-muted text-smaller'>Speech recognition</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSign}>
@@ -128,7 +128,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           e.target.checked ? setVideoCheck(true) : setSpeechCheck(false);
                         }}
                       />
-                      <small className='d-md-none'>Gesture recognition</small>
+                      <small className='d-md-none text-wrap text-muted text-smaller'>Gesture recognition</small>
                     </div>
                   </OverlayTrigger>
                 </div>
