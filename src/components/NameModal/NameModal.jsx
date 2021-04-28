@@ -80,6 +80,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           !e.target.checked && setSignRecognitionCheck(false);
                         }}
                       />
+                      <small>Video Camera</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverAudio}>
@@ -95,6 +96,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           !e.target.checked && setSpeechCheck(false);
                         }}
                       />
+                      <small>Microphone</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSpeech}>
@@ -110,6 +112,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           e.target.checked ? setAudioCheck(true) : setSignRecognitionCheck(false);
                         }}
                       />
+                      <small>Speech recognition</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSign}>
@@ -125,6 +128,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           e.target.checked ? setVideoCheck(true) : setSpeechCheck(false);
                         }}
                       />
+                      <small>Gesture recognition</small>
                     </div>
                   </OverlayTrigger>
                 </div>
