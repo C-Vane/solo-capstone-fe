@@ -152,8 +152,9 @@ export const mapDispatchToProps = (dispatch) => ({
 });
 
 export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
-  if (intervalBlur) {
-    clearInterval(intervalBlur);
+  if (!blurBackground) {
+    intervalBlur && clearInterval(intervalBlur);
+    return;
   }
   if (blurBackground) {
     const options = {

@@ -102,7 +102,7 @@ function Controls({
               checked={speech}
               onChange={(e) => {
                 setSpeech(e.target.checked);
-                e.target.checked ? MuteUnmuteAudio(true) : setSignRecognition(false);
+                e.target.checked && MuteUnmuteAudio(true) && setSignRecognition(false);
               }}
             />
           </OverlayTrigger>
@@ -115,7 +115,7 @@ function Controls({
               checked={signRecognition}
               onChange={(e) => {
                 setSignRecognition(e.target.checked);
-                e.target.checked ? VideoOnAndOff(true) : setSpeech(false);
+                e.target.checked && VideoOnAndOff(true) && setSpeech(false);
               }}
             />
           </OverlayTrigger>
