@@ -24,13 +24,14 @@ const VideoOther = (props) => {
     socket &&
       socket.current &&
       socket.current.on("activity", ({ socketId, sound }) => {
-        console.log(parseFloat(sound.instant), parseFloat(sound.slow));
-        peer.user.socketId === socketId && setSound({ instant: parseFloat(sound.instant), slow: parseFloat(sound.slow) });
-        setTimeout(() => {
-          setSound({});
-        }, 500);
-        if (parseFloat(sound.instant) > 0.5 && parseFloat(sound.slow) > 0.5) {
-          VideoRef && VideoRef.current && user && changeStream();
+        if (sound) {
+          peer.user.socketId === socketId && setSound({ instant: parseFloat(sound.instant), slow: parseFloat(sound.slow) });
+          setTimeout(() => {
+            setSound({});
+          }, 500);
+          if ((parseFloat(sound.instant) > 0.5 && parseFloat(sound.slow) > 0.5) || !sound) {
+            VideoRef && VideoRef.current && user && setMain && changeStream();
+          }
         }
       });
     peer.peer &&

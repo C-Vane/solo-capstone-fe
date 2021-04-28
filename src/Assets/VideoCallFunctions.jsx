@@ -210,7 +210,7 @@ export const handleSound = (stream, socket, roomId, user, audio) => {
     let sound;
     meterRefresh = setInterval(() => {
       sound = { instant: soundMeter.instant.toFixed(2), slow: soundMeter.slow.toFixed(2) };
-      sound.instant > 0.04 && sound.slow > 0.04 && socket.current.emit("active", { roomId, user, sound });
+      sound.instant > 0.05 && sound.slow > 0.05 && socket.current.emit("active", { roomId, user, sound });
     }, 200);
   });
 };
