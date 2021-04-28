@@ -1,7 +1,7 @@
 import { Avatar, IconButton, Paper, Button } from "@material-ui/core";
 import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
-import { BackDrop, ContainerAdmitModal, Logo } from "../../Assets/StyledComponents";
+import { BackDrop, ContainerAdmitModal } from "../../Assets/StyledComponents";
 
 function AdmitUserModal({ close, admitUser, declineUser, waitingList }) {
   return (

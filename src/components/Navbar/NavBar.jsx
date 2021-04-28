@@ -1,4 +1,4 @@
-import { Avatar, Menu, MenuItem, Paper } from "@material-ui/core";
+import { Avatar, Menu, MenuItem } from "@material-ui/core";
 import { AccountCircleOutlined, ExitToAppOutlined, Home, VideocamOutlined } from "@material-ui/icons";
 import React, { useState, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";

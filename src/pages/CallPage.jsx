@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 
 import { connect } from "react-redux";
 
-import io, { Socket } from "socket.io-client";
+import io from "socket.io-client";
 
 import { Video, NameBig, ContainerOtherVideo, VideoImage, ContainerMain, Canvas } from "../Assets/StyledComponents";
 
@@ -16,7 +16,7 @@ import VideoOther from "../components/VideoOther/VideoOther";
 
 import AdmitUserModal from "../components/AdmitUserModal/AdmitUserModal";
 
-import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps, loadBodyPix, LoadSignRecognition } from "../Assets/VideoCallFunctions";
+import { CreatePeer, GetRoom, AddPeer, mapStateToProps, mapDispatchToProps, loadBodyPix, LoadSignRecognition, handleSound } from "../Assets/VideoCallFunctions";
 
 import Scrollbars from "react-custom-scrollbars";
 
@@ -27,8 +27,6 @@ import { Grow } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 
 import Reaction from "../components/Reaction/Reaction";
-
-import * as tf from "@tensorflow/tfjs";
 
 const videoConstraints = {
   height: window.innerHeight * 2,
@@ -94,7 +92,7 @@ export const CallPage = (props) => {
     setUser(props.user);
 
     return () => {};
-  }, []);
+  }, [roomID]);
 
   useEffect(() => {
     setCurrentUser(user);
@@ -112,7 +110,7 @@ export const CallPage = (props) => {
       }
       return;
     }
-    props.room.admin && user && props.room.admin.user == user._id && setAdmin(true);
+    props.room.admin && user && props.room.admin.user === user._id && setAdmin(true);
     props.room._id && setWaitingList(props.room.waitingList);
 
     if (setOptions) {
@@ -125,7 +123,9 @@ export const CallPage = (props) => {
       userStream.current = stream;
 
       MuteUnmuteAudio(audio);
+
       VideoOnAndOff(video);
+
       socketRef.current = io.connect(process.env.REACT_APP_URL);
 
       socketRef.current.emit("join-room", roomID, user);
@@ -164,14 +164,6 @@ export const CallPage = (props) => {
           user: payload.user,
         });
         setPeers((users) => [...users, { peer, user: payload.user }]);
-
-        for (let i = 0; i < 4; i++) {
-          peersRef.current.push({
-            peer,
-            user: payload.user,
-          });
-          setPeers((users) => [...users, { peer, user: payload.user }]);
-        }
       });
 
       socketRef.current.on("receiving-returned-signal", (payload) => {
@@ -180,7 +172,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("text", (payload) => {
-        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
+        const index = peersRef.current.findIndex(({ user }) => user._id === payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], text: payload.subtitles }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
@@ -188,7 +180,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("reaction", (payload) => {
-        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
+        const index = peersRef.current.findIndex(({ user }) => user._id === payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], reaction: payload.reaction }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
@@ -201,7 +193,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("set-video-background", (payload) => {
-        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
+        const index = peersRef.current.findIndex(({ user }) => user._id === payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], blur: payload.blur }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
@@ -242,6 +234,7 @@ export const CallPage = (props) => {
       socketRef.current.on("mute", () => {
         MuteUnmuteAudio(false);
       });
+
       socketRef.current.on("call-end", () => {
         props.setLoading({ active: true });
         window.location.replace("/callEnded");
@@ -256,11 +249,16 @@ export const CallPage = (props) => {
     };
   }, [user, props.room, setOptions]);
 
+  useEffect(() => {
+    user && user._id && userStream && userStream.current && handleSound(userStream.current, socketRef, roomID, user, audio);
+  }, [audio]);
+
   const admitUser = (payload) => {
     socketRef.current.emit("admit-user", { roomId: roomID, adminId: userID, user: payload });
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
     setAdmit(false);
   };
+
   const declineUser = (payload) => {
     //decline user
     setWaitingList((list) => list.filter((user) => user.socketId !== payload.socketId));
@@ -334,17 +332,19 @@ export const CallPage = (props) => {
 
   return (
     <ContainerMain>
-      <Grow in={setOptions} mountOnEnter unmountOnExit disableStrictModeCompat={true} timeOut={1000}>
-        <NameModal
-          setUser={updateUser}
-          user={!user._id}
-          setOptions={setSetOptions}
-          setVideo={setVideo}
-          setAudio={setAudio}
-          setSpeech={setSpeech}
-          setSignRecognition={setSignRecognition}
-          setLanguage={setLanguage}
-        />
+      <Grow in={setOptions} mountOnEnter unmountOnExit disableStrictModeCompat={true} timeout={1000}>
+        <div>
+          <NameModal
+            setUser={updateUser}
+            user={!user._id}
+            setOptions={setSetOptions}
+            setVideo={setVideo}
+            setAudio={setAudio}
+            setSpeech={setSpeech}
+            setSignRecognition={setSignRecognition}
+            setLanguage={setLanguage}
+          />
+        </div>
       </Grow>
       {!setOptions && (
         <>
@@ -371,7 +371,7 @@ export const CallPage = (props) => {
                 <div style={{ width: "100%", minHeight: "30h" }}>
                   <ContainerOtherVideo>
                     {peers.map((peer, index) => (
-                      <VideoOther key={index} peer={peer} setMain={setMain} size={3} muteUsers={MuteUsers} kickOut={KickOut} />
+                      <VideoOther key={index} peer={peer} setMain={setMain} size={3} muteUsers={MuteUsers} kickOut={KickOut} socket={socketRef} />
                     ))}
                   </ContainerOtherVideo>
                 </div>

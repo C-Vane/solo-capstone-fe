@@ -69,7 +69,6 @@ function Controls({
         <DivHalf>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverVideo}>
             <Checkbox
-              color='dark'
               icon={<VideocamOffOutlined />}
               checkedIcon={<Videocam />}
               name='video'
@@ -83,7 +82,6 @@ function Controls({
           </OverlayTrigger>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverAudio}>
             <Checkbox
-              color='dark'
               icon={<MicOffOutlined />}
               checkedIcon={<Mic />}
               name='audio'
@@ -97,7 +95,6 @@ function Controls({
           </OverlayTrigger>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverSpeech}>
             <Checkbox
-              color='dark'
               icon={<SpeakerNotesOffOutlined />}
               checkedIcon={<SpeakerNotes />}
               name='speech'
@@ -111,7 +108,6 @@ function Controls({
           </OverlayTrigger>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverSign}>
             <Checkbox
-              color='dark'
               icon={<ThumbsUpDownOutlined />}
               checkedIcon={<ThumbsUpDown />}
               name='signLanguage'
@@ -124,7 +120,7 @@ function Controls({
             />
           </OverlayTrigger>
           <OverlayTrigger className='m-auto' trigger={["hover", "focus"]} placement='top' overlay={popoverBackground}>
-            <Checkbox color='dark' icon={<BlurOffRounded />} checkedIcon={<BlurOnRounded />} name='blurBackground' aria-label='Background blur' checked={background} onChange={setBackground} />
+            <Checkbox icon={<BlurOffRounded />} checkedIcon={<BlurOnRounded />} name='blurBackground' aria-label='Background blur' checked={background} onChange={setBackground} />
           </OverlayTrigger>
           <Chip label={privateRoom ? "Private" : "Public"} className='mt-3 ml-2' size='small' variant='outlined' />
           <AdditionalOptions>

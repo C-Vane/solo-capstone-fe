@@ -1,6 +1,4 @@
-import { Button } from "react-bootstrap";
 import styled from "styled-components";
-import { FreeBreakfastTwoTone, PanToolTwoTone, ThumbDownTwoTone, ThumbUpTwoTone } from "@material-ui/icons";
 import { Container, Chip } from "@material-ui/core";
 import img from "./img/SI.png";
 import img_full from "./img/SiFull.png";
@@ -230,6 +228,9 @@ export const Video = styled.video`
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   border-radius: 7px;
+  box-shadow: 0 0 ${({ soundMeter }) => (soundMeter ? soundMeter.instant * 60 : 0)}px rgba(66, 122, 161, ${({ soundMeter }) => (soundMeter ? soundMeter.slow + 0.4 : 0)}),
+    0 0 ${({ soundMeter }) => (soundMeter ? soundMeter.instant * 60 * 2 : 0)}px rgba(66, 122, 161, ${({ soundMeter }) => (soundMeter ? soundMeter.slow + 0.3 : 0)}),
+    0 0 ${({ soundMeter }) => (soundMeter ? soundMeter.instant * 60 * 4 : 0)}px rgba(66, 122, 161, ${({ soundMeter }) => (soundMeter ? soundMeter.slow + 0.2 : 0)});
 `;
 export const Canvas = styled.canvas`
   position: absolute;

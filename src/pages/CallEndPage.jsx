@@ -1,8 +1,7 @@
-import { Button } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
 
 export const StartVideoCallPage = (props) => {

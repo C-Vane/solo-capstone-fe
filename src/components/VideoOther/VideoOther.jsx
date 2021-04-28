@@ -1,4 +1,4 @@
-import { Avatar, Button, Menu, MenuItem } from "@material-ui/core";
+import { Avatar, Menu, MenuItem } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { Col } from "react-bootstrap";
 import { connect } from "react-redux";
@@ -7,7 +7,7 @@ import { loadBodyPix, mapDispatchToProps, mapStateToProps } from "../../Assets/V
 import Reaction from "../Reaction/Reaction";
 
 const VideoOther = (props) => {
-  const { peer, setMain, size, muteUsers, kickOut } = props;
+  const { peer, setMain, size, muteUsers, kickOut, socket } = props;
   const VideoRef = useRef();
   const CanvasRef = useRef();
   const [user, setUser] = useState({});
@@ -15,11 +15,24 @@ const VideoOther = (props) => {
   const [video, setVideo] = useState(false);
   const [muted, setMuted] = useState(false);
   const [menu, setMenu] = useState(null);
+  const [sound, setSound] = useState({});
   useEffect(() => {
     setUser(peer.user);
     if (props.user) {
       props.room.admin.user == props.user._id && setAdmin(true);
     }
+    socket &&
+      socket.current &&
+      socket.current.on("activity", ({ socketId, sound }) => {
+        console.log(parseFloat(sound.instant), parseFloat(sound.slow));
+        peer.user.socketId === socketId && setSound({ instant: parseFloat(sound.instant), slow: parseFloat(sound.slow) });
+        setTimeout(() => {
+          setSound({});
+        }, 500);
+        if (parseFloat(sound.instant) > 0.5 && parseFloat(sound.slow) > 0.5) {
+          VideoRef && VideoRef.current && user && changeStream();
+        }
+      });
     peer.peer &&
       peer.peer.on("stream", (stream) => {
         if (VideoRef.current) {
@@ -59,7 +72,7 @@ const VideoOther = (props) => {
           {user.firstname} {user.lastname}
         </NameBig>
       )}
-      <Video playsInline autoPlay ref={VideoRef} muted={muted} />
+      <Video playsInline autoPlay ref={VideoRef} muted={muted} soundMeter={sound} />
       <Canvas ref={CanvasRef} className={peer.blur ? "" : "d-none"}></Canvas>
       {!video && <VideoImage src={user.img} />}
       {size === 6 && <div className='m-auto'>{peer.text && <Speech>{peer.text}</Speech>}</div>}

@@ -1,5 +1,5 @@
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Popover, TextField } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Scrollbars from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { mapDispatchToProps, mapStateToProps } from "../../Assets/VideoCallFunctions";
@@ -56,16 +56,7 @@ function Chat({ anchor, setAnchor, socket, user, room, messages }) {
         </Scrollbars>
         <Divider component='li' />
 
-        <TextField
-          className='m-auto w-100 mt-1'
-          size='small'
-          className='mx-2'
-          variant='outlined'
-          label='Write message...'
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleSend}
-        />
+        <TextField className='m-auto w-100 mt-1 mx-2' size='small' variant='outlined' label='Write message...' value={text} onChange={(e) => setText(e.target.value)} onKeyDown={handleSend} />
       </List>
     </Popover>
   );

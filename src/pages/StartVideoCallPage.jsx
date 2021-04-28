@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import { postFunction } from "../functions/CRUDFunctions";
 import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
-import { Divider, List, ListItem, ListItemIcon, ListItemText, Popover, Switch, TextField } from "@material-ui/core";
+import { Divider, List, ListItem, ListItemIcon, ListItemText, Switch } from "@material-ui/core";
 import { Chat, Lock } from "@material-ui/icons";
 export const StartVideoCallPage = (props) => {
   const [privateRoom, setPrivateRoom] = useState("true");

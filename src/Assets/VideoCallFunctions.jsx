@@ -4,7 +4,7 @@ import * as tf from "@tensorflow/tfjs";
 
 import * as bodyPix from "@tensorflow-models/body-pix";
 import { recognizedWords } from "./language";
-let interval, secondInterval, intervalBlur;
+let interval, secondInterval, intervalBlur, meterRefresh;
 
 export const CreatePeer = (userToSignal, caller, stream, socket) => {
   const peer = new Peer({
@@ -175,15 +175,90 @@ export const loadBodyPix = (mainVideo, canvas, blurBackground) => {
 };
 
 const perform = async (net, video, canvas, mainVideo, blurBackground) => {
-  intervalBlur =
-    blurBackground &&
-    setInterval(async () => {
-      const segmentation = await net.segmentPerson(video);
-      const backgroundBlurAmount = 10;
-      const edgeBlurAmount = 5;
-      const flipHorizontal = true;
-      requestAnimationFrame(() => {
-        bodyPix.drawBokehEffect(canvas.current, mainVideo.current, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);
-      });
-    }, 16.7);
+  intervalBlur = setInterval(async () => {
+    const segmentation = await net.segmentPerson(video);
+    const backgroundBlurAmount = 10;
+    const edgeBlurAmount = 5;
+    const flipHorizontal = true;
+    requestAnimationFrame(() => {
+      bodyPix.drawBokehEffect(canvas.current, mainVideo.current, segmentation, backgroundBlurAmount, edgeBlurAmount, flipHorizontal);
+    });
+  }, 16.7);
+};
+
+export const handleSound = (stream, socket, roomId, user, audio) => {
+  console.log("audio");
+  if (!audio && meterRefresh) {
+    window.soundMeter.stop();
+    clearInterval(meterRefresh);
+    return;
+  } else {
+    try {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      window.audioContext = new AudioContext();
+    } catch (e) {
+      console.log("Web Audio API not supported.");
+    }
+  }
+  window.stream = stream;
+  const soundMeter = (window.soundMeter = new SoundMeter(window.audioContext));
+  soundMeter.connectToSource(stream, function (e) {
+    if (e) {
+      console.log(e);
+      return;
+    }
+    let sound;
+    meterRefresh = setInterval(() => {
+      sound = { instant: soundMeter.instant.toFixed(2), slow: soundMeter.slow.toFixed(2) };
+      sound.instant > 0.04 && sound.slow > 0.04 && socket.current.emit("active", { roomId, user, sound });
+    }, 200);
+  });
+};
+
+function SoundMeter(context) {
+  this.context = context;
+  this.instant = 0.0;
+  this.slow = 0.0;
+  this.clip = 0.0;
+  this.script = context.createScriptProcessor(2048, 1, 1);
+  const that = this;
+  this.script.onaudioprocess = function (event) {
+    const input = event.inputBuffer.getChannelData(0);
+    let i;
+    let sum = 0.0;
+    let clipcount = 0;
+    for (i = 0; i < input.length; ++i) {
+      sum += input[i] * input[i];
+      if (Math.abs(input[i]) > 0.99) {
+        clipcount += 1;
+      }
+    }
+    that.instant = Math.sqrt(sum / input.length);
+    that.slow = 0.95 * that.slow + 0.05 * that.instant;
+    that.clip = clipcount / input.length;
+  };
+}
+
+SoundMeter.prototype.connectToSource = function (stream, callback) {
+  console.log("SoundMeter connecting");
+  try {
+    this.mic = this.context.createMediaStreamSource(stream);
+    this.mic.connect(this.script);
+    // necessary to make sample run, but should not be.
+    this.script.connect(this.context.destination);
+    if (typeof callback !== "undefined") {
+      callback(null);
+    }
+  } catch (e) {
+    console.error(e);
+    if (typeof callback !== "undefined") {
+      callback(e);
+    }
+  }
+};
+
+SoundMeter.prototype.stop = function () {
+  console.log("SoundMeter stopping");
+  this.mic.disconnect();
+  this.script.disconnect();
 };

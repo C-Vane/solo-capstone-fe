@@ -1,8 +1,8 @@
-import { Button, Container, Divider, Grid, TextField, Paper, IconButton, FormControlLabel, Switch, Grow, CircularProgress, Snackbar } from "@material-ui/core";
+import { Button, Divider, Grid, TextField, Paper, IconButton, FormControlLabel, Switch, Grow, CircularProgress, Snackbar } from "@material-ui/core";
 import { Publish } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
-import { Col, Image, Row } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { connect } from "react-redux";
 import { ContainerMain, MainContainer } from "../Assets/StyledComponents";
 import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
