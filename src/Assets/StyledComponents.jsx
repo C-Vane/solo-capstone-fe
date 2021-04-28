@@ -211,6 +211,7 @@ export const ControlsContainer = styled.div`
     .MuiChip-root {
       display: block;
     }
+    max-width: 80vw;
   }
 `;
 
