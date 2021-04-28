@@ -172,10 +172,11 @@ export const ControlsContainer = styled.div`
   position: fixed;
   bottom: 5px;
   z-index: 1;
-  min-width: 90vw;
+  min-width: 80vw;
   min-height: 10vh;
   display: flex;
-  cursor: pointer;
+  left: 50%;
+  margin-left: calc(-80vw / 2);
 
   .MuiChip-root {
     display: none;
@@ -211,10 +212,6 @@ export const ControlsContainer = styled.div`
     .MuiChip-root {
       display: block;
     }
-  }
-  @media (min-width: 1024px) {
-    max-width: 80vw;
-    margin: auto;
   }
 `;
 
