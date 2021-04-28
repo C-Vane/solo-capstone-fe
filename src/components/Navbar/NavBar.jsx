@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Bar, Nav, LogoFullName, NavItem, SIGN_IN, SIGN_UP } from "../../Assets/StyledComponents";
 import { mapDispatchToProps, mapStateToProps } from "../../Assets/VideoCallFunctions";
-import { getFunction, postFunction } from "../../functions/CRUDFunctions";
+import { postFunction } from "../../functions/CRUDFunctions";
 import GetStarted from "../GetStarted/GetStarted";
 
 export const NavBar = (props) => {

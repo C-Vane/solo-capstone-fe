@@ -5,6 +5,7 @@ import { Button } from "@material-ui/core";
 import { mapDispatchToProps, mapStateToProps } from "../Assets/VideoCallFunctions";
 import { Logo } from "../Assets/StyledComponents";
 import { connect } from "react-redux";
+import { getFunction } from "../functions/CRUDFunctions";
 
 const FullPage = (props) => {
   const [errorText, setErrorText] = useState([]);
