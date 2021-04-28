@@ -110,7 +110,7 @@ export const CallPage = (props) => {
       }
       return;
     }
-    props.room.admin && user && props.room.admin.user === user._id && setAdmin(true);
+    props.room.admin && user && props.room.admin.user == user._id && setAdmin(true);
     props.room._id && setWaitingList(props.room.waitingList);
 
     if (setOptions) {
@@ -172,7 +172,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("text", (payload) => {
-        const index = peersRef.current.findIndex(({ user }) => user._id === payload.user);
+        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], text: payload.subtitles }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
@@ -180,7 +180,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("reaction", (payload) => {
-        const index = peersRef.current.findIndex(({ user }) => user._id === payload.user);
+        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], reaction: payload.reaction }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
@@ -193,7 +193,7 @@ export const CallPage = (props) => {
       });
 
       socketRef.current.on("set-video-background", (payload) => {
-        const index = peersRef.current.findIndex(({ user }) => user._id === payload.user);
+        const index = peersRef.current.findIndex(({ user }) => user._id == payload.user);
         if (index !== -1) {
           const updated = [...peersRef.current.slice(0, index), { ...peersRef.current[index], blur: payload.blur }, ...peersRef.current.slice(index + 1)];
           setPeers(updated);
