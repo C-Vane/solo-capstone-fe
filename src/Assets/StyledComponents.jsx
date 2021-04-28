@@ -184,7 +184,7 @@ export const ControlsContainer = styled.div`
   @media (hover: hover) and (pointer: fine) {
     & > .MuiPaper-root {
       visibility: hidden;
-      opacity: 0;
+      opacity: 0.2;
       transition: opacity 500ms linear, visibility 0s linear 500ms;
     }
     .MuiPaper-root .MuiSnackbar-root div,
