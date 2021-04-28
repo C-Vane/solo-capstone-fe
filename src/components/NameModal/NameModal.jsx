@@ -68,7 +68,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                 )}
                 <div className='d-flex justify-content-around mt-2'>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverVideo}>
-                    <div>
+                    <div className='d-flex flex-column'>
                       <Checkbox
                         icon={<VideocamOffOutlined />}
                         checkedIcon={<Videocam />}
@@ -80,11 +80,11 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           !e.target.checked && setSignRecognitionCheck(false);
                         }}
                       />
-                      <small>Video Camera</small>
+                      <small className='d-md-none'>Video Camera</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverAudio}>
-                    <div>
+                    <div className='d-flex flex-column'>
                       <Checkbox
                         icon={<MicOffOutlined />}
                         checkedIcon={<Mic />}
@@ -96,11 +96,11 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           !e.target.checked && setSpeechCheck(false);
                         }}
                       />
-                      <small>Microphone</small>
+                      <small className='d-md-none'>Microphone</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSpeech}>
-                    <div>
+                    <div className='d-flex flex-column'>
                       <Checkbox
                         icon={<SpeakerNotesOffOutlined />}
                         checkedIcon={<SpeakerNotes />}
@@ -112,11 +112,11 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           e.target.checked ? setAudioCheck(true) : setSignRecognitionCheck(false);
                         }}
                       />
-                      <small>Speech recognition</small>
+                      <small className='d-md-none'>Speech recognition</small>
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger trigger={["hover", "focus"]} placement='bottom' overlay={popoverSign}>
-                    <div>
+                    <div className='d-flex flex-column'>
                       <Checkbox
                         icon={<ThumbsUpDownOutlined />}
                         checkedIcon={<ThumbsUpDown />}
@@ -128,7 +128,7 @@ function NameModal({ setAudio, setVideo, setUser, setSpeech, setSignRecognition,
                           e.target.checked ? setVideoCheck(true) : setSpeechCheck(false);
                         }}
                       />
-                      <small>Gesture recognition</small>
+                      <small className='d-md-none'>Gesture recognition</small>
                     </div>
                   </OverlayTrigger>
                 </div>
