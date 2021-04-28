@@ -50,6 +50,7 @@ const VideoOther = (props) => {
     VideoRef.current.srcObject = stream;
     setUser(newUser);
     setMuted(muted);
+    setVideo(stream.getVideoTracks()[0].enabled);
   };
 
   const handleBackgroundBlur = (blur) => {
