@@ -211,7 +211,10 @@ export const ControlsContainer = styled.div`
     .MuiChip-root {
       display: block;
     }
+  }
+  @media (min-width: 1024px) {
     max-width: 80vw;
+    margin: auto;
   }
 `;
 
