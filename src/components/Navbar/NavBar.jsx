@@ -10,7 +10,7 @@ import { getFunction, postFunction } from "../../functions/CRUDFunctions";
 import GetStarted from "../GetStarted/GetStarted";
 
 export const NavBar = (props) => {
-  const { user, location, setUser } = props;
+  const { user, location } = props;
   const [menu, setMenu] = useState(null);
   const [getStarted, setGetStarted] = useState(false);
 
@@ -21,19 +21,7 @@ export const NavBar = (props) => {
       window.location.replace("/");
     }
   };
-  const getUser = async () => {
-    const loggedInUser = await getFunction("users/me");
-    if (loggedInUser && loggedInUser._id) {
-      setUser(loggedInUser);
-    }
-    setTimeout(() => {
-      props.setLoading({ active: false });
-    }, 1500);
-  };
 
-  useEffect(() => {
-    getUser();
-  }, []);
   if (props.location.pathname.includes("/video")) {
     return <div></div>;
   }

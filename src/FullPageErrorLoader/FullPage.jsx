@@ -14,6 +14,19 @@ const FullPage = (props) => {
   const [classNameLoading, setClassNameLoading] = useState("LoadingAnimated");
   const [classNameShape, setClassNameShape] = useState("shape");
 
+  const getUser = async () => {
+    const loggedInUser = await getFunction("users/me");
+    if (loggedInUser && loggedInUser._id) {
+      props.setUser(loggedInUser);
+    }
+    setTimeout(() => {
+      props.setLoading({ active: false });
+    }, 1500);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
   useEffect(() => {
     const cleanup = props.error && props.loading && !props.loading.active && !props.error.active;
     setTimeout(
